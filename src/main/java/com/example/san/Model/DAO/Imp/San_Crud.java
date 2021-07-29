@@ -1,6 +1,6 @@
-package com.example.san.Model.DAO.ISAN_CrudImp;
+package com.example.san.Model.DAO.Imp;
 
-import com.example.san.Model.DAO.ISAN_Crud;
+import com.example.san.Model.DAO.ISan_Crud;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,23 +10,16 @@ import java.io.Serializable;
 
 @Repository
 @Transactional
-public class SAN_Crud<T, E extends Serializable> implements ISAN_Crud<T, E> {
+public abstract class San_Crud<T, E extends Serializable> implements ISan_Crud<T, E> {
+
 
     @PersistenceContext
     private EntityManager entityManager;
 
-//    private Session getSession() {
-//
-//        if (entityManager.unwrap(Session.class)!=null)
-//        return entityManager.unwrap(Session.class);
-//        else
-//            entityManager.
-//    }
 
     @Override
     public <E> E Save(T entity) {
         entityManager.persist(entity);
-
         return (E) entity;
 
     }
@@ -46,8 +39,5 @@ public class SAN_Crud<T, E extends Serializable> implements ISAN_Crud<T, E> {
         return null;
     }
 
-    @Override
-    public <E> E findByName(T entity) {
-        return null;
-    }
+
 }

@@ -1,19 +1,33 @@
 package com.example.san.Service;
 
-import com.example.san.Model.DAO.ISAN_Crud;
-import com.example.san.Model.SAN_User;
+import com.example.san.Model.DAO.IDaoUser;
+import com.example.san.Model.BaseModel.San_User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SrvUser {
 
+//    @Qualifier("IDaoUser")
+//    @Autowired
+//    private ISan_Crud ISAN_crud;
+
     @Autowired
-    private ISAN_Crud ISAN_crud;
+    private IDaoUser daoUser;
 
-    public SAN_User Save(SAN_User user) {
 
-        return (SAN_User) ISAN_crud.Save(user);
+    public San_User Save(San_User user) {
+
+        return (San_User) daoUser.Save(user);
 
     }
+
+
+    public San_User getUserByUserName(String userName) {
+
+        return (San_User) daoUser.findByUserName(userName);
+
+    }
+
+
 }
