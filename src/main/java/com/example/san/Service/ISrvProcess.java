@@ -13,7 +13,7 @@ public interface ISrvProcess {
 
     San_User decreaseUserCredite(long userId,long amount);
 
-    String invikeService();
+    void invokeService(long serviceId, long userId );
 
     San_UserService addUserToService(long userId,long SeviceId);
 

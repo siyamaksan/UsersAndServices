@@ -6,7 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-@Entity
+@Entity(name = "San_UserService")
 @Getter @Setter @NoArgsConstructor
 public class San_UserService {
 
@@ -16,7 +16,7 @@ public class San_UserService {
     @SequenceGenerator(name = "id_Sequence", sequenceName = "ID_SEQ")
     private long Id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     private San_User User;
 
     @ManyToOne

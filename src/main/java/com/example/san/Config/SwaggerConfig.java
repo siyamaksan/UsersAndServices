@@ -1,11 +1,16 @@
 package com.example.san.Config;
 
+import com.google.common.base.Predicates;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.google.common.base.Predicate;
 
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -16,24 +21,13 @@ import static com.google.common.base.Predicates.or;
 
 @Configuration
 @EnableSwagger2
-public class SwaggerConfig {
-
+public class SwaggerConfig  extends WebMvcConfigurerAdapter {
     @Bean
-    public Docket postsApi() {
-        return new Docket(DocumentationType.SWAGGER_2).groupName("San")
-                .apiInfo(apiInfo()).select().paths(postPaths()).build();
+    public Docket apiDocket() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .paths(PathSelectors.any())
+                .apis(RequestHandlerSelectors.basePackage("com.example.san.Controller"))
+                .build();
     }
-
-    private Predicate<String> postPaths() {
-        return or(regex("/User.*"), regex("/Service.*"));
-    }
-
-    private ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title("User And Services")
-                .description("this is a instance")
-                .termsOfServiceUrl("siyamak alizadeh")
-                .contact("siyamak alizadeh").license("san")
-                .licenseUrl("https://github.com/Siyamaksan9").version("1.0").build();
-    }
-
 }

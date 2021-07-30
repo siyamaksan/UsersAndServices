@@ -7,8 +7,10 @@ import com.example.san.Model.DAO.IDaoService;
 import com.example.san.Model.DAO.IDaoUser;
 import com.example.san.Model.DAO.IDaoUserService;
 import com.example.san.Service.ISrvProcess;
+import com.example.san.Model.MainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SrvProcess implements ISrvProcess {
@@ -47,13 +49,13 @@ public class SrvProcess implements ISrvProcess {
 
 
     @Override
-    public San_UserService addUserToService(long userId,long serviceId) {
+    public San_UserService addUserToService(long userId, long serviceId) {
 
-        San_User user=iDaoUser.getById(userId);
+        San_User user = iDaoUser.getById(userId);
 
-        San_Service service=iDaoService.getById(serviceId);
+        San_Service service = iDaoService.getById(serviceId);
 
-        San_UserService userService=new San_UserService();
+        San_UserService userService = new San_UserService();
 
         userService.setService(service);
 
@@ -62,9 +64,15 @@ public class SrvProcess implements ISrvProcess {
         return (San_UserService) iDaoUserService.Save(userService);
     }
 
-    @Override
-    public String invikeService() {
-        return null;
+    @Transactional
+    public void invokeService(long serviceId, long userId) {
+
+        San_UserService userService = iDaoUserService.findByUserAndService(serviceId, userId);
+
+        MainService mainService = new MainService();
+        mainService.setUserService(userService);
+        mainService.start();
+
     }
 
 }
