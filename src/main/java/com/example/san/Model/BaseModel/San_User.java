@@ -21,9 +21,9 @@ public class San_User {
     private String UserName;
 
     private String Password;
-
-    @OneToMany(mappedBy = "users")
-    private List<San_GroupRole> groupRoles;
+    
+    @ManyToMany(mappedBy = "users")
+    private List<San_Authority> authorities;
 
     private Boolean isActive;
 

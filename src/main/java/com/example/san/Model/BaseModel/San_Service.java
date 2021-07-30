@@ -1,5 +1,6 @@
 package com.example.san.Model.BaseModel;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,10 +9,11 @@ import oracle.sql.TIMESTAMP;
 import javax.persistence.*;
 import java.util.List;
 
-@Entity
+@Entity(name = "SERVICE")
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class San_Service {
 
     @javax.persistence.Id
@@ -22,16 +24,27 @@ public class San_Service {
 
     private long Cost;
 
-    private long ServiceName;
+    private long capacity;
 
-    private Boolean isActive;
+    private String ServiceName;
+
+    private Boolean isActive = false;
 
     private TIMESTAMP startTime;
 
     private TIMESTAMP EndTime;
 
-    @OneToMany(mappedBy = "Service",cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "Service", cascade = CascadeType.REMOVE)
     private List<San_UserService> userServices;
 
 
+    public San_Service(long capacity,long cost, String name, TIMESTAMP startTime, TIMESTAMP endTime) {
+
+        this.capacity=capacity;
+        this.Cost = cost;
+        this.ServiceName = name;
+        this.startTime = startTime;
+        this.EndTime = endTime;
+
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.san.Model.BaseModel;
 
+import com.example.san.Util.Enums.Roles;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,21 +12,21 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-
-public class San_UserRole {
+@Table(name = "Authority")
+public class San_Authority {
     @javax.persistence.Id
     @Column(name = "ID")
     @GeneratedValue(strategy= GenerationType.SEQUENCE, generator = "id_Sequence")
     @SequenceGenerator(name = "id_Sequence", sequenceName = "ID_SEQ")
     private long Id;
 
-    private String RoleName;
+    @Enumerated(EnumType.STRING)
+    private Roles Name;
 
-    @ManyToOne
-    private San_User users;
 
-    @OneToMany(mappedBy = "role")
-    private List<San_GroupRole> groupRoles;
+
+    @ManyToMany
+    private List<San_User> users;
 
 
 

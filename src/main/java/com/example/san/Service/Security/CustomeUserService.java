@@ -13,46 +13,45 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 
-public class UserService implements UserDetails {
+public class CustomeUserService implements UserDetails {
 
 
     private San_User san_user;
-    public UserService(San_User san_user) {
+    public CustomeUserService(San_User san_user) {
         this.san_user = san_user;
     }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return san_user.getGroupRoles().stream().map(san_groupRole ->new SimpleGrantedAuthority(san_groupRole.getRole().getRoleName().toString())).collect(Collectors.toList()) ;
+        return san_user.getAuthorities().stream().map(authority -> new SimpleGrantedAuthority(authority.getName().toString())).collect(Collectors.toList());
     }
-
+    public long getId() {
+        return san_user.getId();
+    }
     @Override
     public String getPassword() {
         return san_user.getPassword();
     }
-
     @Override
     public String getUsername() {
         return san_user.getUserName();
     }
-
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
-
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
-
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
-
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
+    }
+    public San_User getUserDetails() {
+        return san_user;
     }
 }
