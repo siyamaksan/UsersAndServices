@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class San_User {
+public class San_User extends BaseEntity {
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "id_Sequence")
@@ -32,7 +32,8 @@ public class San_User {
     @OneToMany(mappedBy = "Service",cascade = CascadeType.REMOVE)
     private List<San_UserService> userServices;
 
-
-
-
+    public San_User(String userName, String password) {
+        UserName = userName;
+        Password = password;
+    }
 }

@@ -1,24 +1,22 @@
 package com.example.san.Service;
 
 import com.example.san.Model.BaseModel.San_User;
-import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 public interface ISrvUser {
 
-    San_User Save(San_User user);
+    San_User Save(String username,String password);
 
-    San_User remove(San_User user);
+    Boolean remove(long userId);
 
-    San_User edit(San_User user);
+    San_User edit(long id,String userName,String password);
 
-    San_User getAll(San_User user);
+    List<San_User> getAll();
 
     San_User getUserByUserName(String userName);
 
-    San_User chargingUser(San_User user);
-
-    San_User addUserToService(San_User user);
 
 
 

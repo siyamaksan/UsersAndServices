@@ -10,6 +10,10 @@ public interface IDaoService extends ISan_Crud{
 
     San_Service getById(long serviceId);
 
-    List<San_Service> findByName(String name);
 
+
+    List<San_Service> getUserService(long name);
+
+
+    List<San_Service> findByName(String name);
 }

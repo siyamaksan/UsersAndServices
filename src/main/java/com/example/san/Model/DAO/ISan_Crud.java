@@ -10,6 +10,7 @@ public interface ISan_Crud<T,E> {
     public <E> E  Update(T entity);
 
     public void Delete(T entity);
+
     public List<E> getAll(T entity);
 
     public List<E> getAllActive(T entity);

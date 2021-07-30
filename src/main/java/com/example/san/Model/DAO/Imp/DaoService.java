@@ -29,6 +29,17 @@ public class DaoService extends San_Crud implements IDaoService {
     }
 
     @Override
+    public List<San_Service> getUserService(long userId) {
+        Query query = entityManager.createQuery("select SERVICE from SERVICE service " +
+                "inner join San_UserService us on us.Service.Id=service.Id " +
+                "inner join San_User user on user.Id=us.Service.Id where user.Id=:userId");
+        query.setParameter("userId", userId);
+
+        List<San_Service> services = (List<San_Service>) query.getResultList();
+        return services;
+    }
+
+    @Override
     public List<San_Service> findByName(String name) {
         Query query = entityManager.createQuery("select service from SERVICE service where service.ServiceName=:name");
         query.setParameter("name", name);

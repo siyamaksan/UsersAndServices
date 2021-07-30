@@ -4,8 +4,10 @@ import com.example.san.Model.BaseModel.San_Service;
 import com.example.san.Service.ISrvService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
@@ -21,24 +23,57 @@ public class ServiceContoller {
         return srvService.getAll(new San_Service());
     }
 
+    @RequestMapping(value = "/getAllActiveServices")
+    public List<San_Service> getAllActiveServices() {
+        return srvService.getAllActiveServices();
+    }
+
     @RequestMapping(value = "/getmyservices")
-    public String getAllRelatedServices() {
-        return "done!!";
+    public List<San_Service> getAllRelatedServices() {
+        return srvService.getAllRelatedServices();
+    }
+
+    @RequestMapping(value = "/search")
+    public List<San_Service> getByName(@RequestParam String name) {
+        return srvService.getByName(name);
     }
 
     @RequestMapping(value = "/activate")
-    public String activateService() {
-        return "done!!";
+    public void activateService(@RequestParam long serviceId) {
+         srvService.activateService(serviceId);
+    }
+    @RequestMapping(value = "/deactivate")
+    public void deactivateService(@RequestParam long serviceId) {
+        srvService.deactivateService(serviceId);
     }
 
     @RequestMapping(value = "/newservice")
-    public String createNewService() {
-        return "done!!";
+    public void createNewService(@RequestParam String name,
+                                   @RequestParam long cost,
+                                   @RequestParam long capa,
+                                   @RequestParam Timestamp startTime,
+                                   @RequestParam Timestamp endTime) {
+         srvService.save(name,cost,capa,startTime);
     }
 
-    @RequestMapping(value = "/invokes")
-    public String useService() {
-        return "done!!";
+    @RequestMapping(value = "/remove")
+    public void removeService(@RequestParam long serviceId) {
+         srvService.remove(serviceId);
     }
+
+    @RequestMapping(value = "/update")
+    public San_Service updateService(@RequestParam long serviceId,
+                                     @RequestParam (required = false) String name,
+                                     @RequestParam(required = false) long cost,
+                                     @RequestParam(required = false) long capa,
+                                     @RequestParam (required = false)Timestamp startTime,
+                                     @RequestParam (required = false)Timestamp endTime) {
+
+
+        return srvService.edit(serviceId,name,cost,capa,startTime,endTime);
+    }
+
+
+
 
 }
