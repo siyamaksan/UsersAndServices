@@ -8,7 +8,6 @@ public interface IDaoUser extends ISan_Crud {
 
     San_User findByUserName(String UserName);
 
-    San_User getById(long userId);
 
 
 

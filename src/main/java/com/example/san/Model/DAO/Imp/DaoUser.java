@@ -21,19 +21,22 @@ public class DaoUser extends San_Crud implements IDaoUser {
 
     @Override
     public San_User findByUserName(String UserName) {
-        Query query = entityManager.createQuery("select User from San_User User where User.UserName=:UserName");
-        query.setParameter("UserName", UserName);
+        try {
+            Query query = entityManager.createQuery("select User from San_User User where User.UserName=:UserName");
+            query.setParameter("UserName", UserName);
 
-        San_User user = (San_User) query.getSingleResult();
-        return user;
+            San_User user = (San_User) query.getSingleResult();
+            return user;
+        }catch (Exception e){
+            return new San_User();
+        }
+
     }
 
-    @Override
-    public San_User getById(long userId) {
-        Query query = entityManager.createQuery("select user from San_User user where user.Id=:userId");
-        query.setParameter("userId", userId);
 
-        San_User user = (San_User) query.getSingleResult();
-        return user;
+
+    @Override
+    protected Class getDomainClass() {
+        return San_User.class;
     }
 }

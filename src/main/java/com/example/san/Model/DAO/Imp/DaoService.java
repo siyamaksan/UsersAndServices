@@ -2,7 +2,7 @@ package com.example.san.Model.DAO.Imp;
 
 
 import com.example.san.Model.BaseModel.San_Service;
-import com.example.san.Model.BaseModel.San_User;
+import com.example.san.Model.BaseModel.San_UserService;
 import com.example.san.Model.DAO.IDaoService;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,24 +19,15 @@ public class DaoService extends San_Crud implements IDaoService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Override
-    public San_Service getById(long serviceId) {
-        Query query = entityManager.createQuery("select service from SAN_SERVICE service where service.Id=:serviceId");
-        query.setParameter("serviceId", serviceId);
 
-        San_Service service = (San_Service) query.getSingleResult();
-        return service;
-    }
 
     @Override
-    public List<San_Service> getUserService(long userId) {
-        Query query = entityManager.createQuery("select SERVICE from SAN_SERVICE service " +
-                "inner join San_UserService us on us.Service.Id=service.Id " +
-                "inner join San_User user on user.Id=us.Service.Id where user.Id=:userId");
+    public List<San_UserService> getUserService(long userId) {
+        Query query = entityManager.createQuery("select SERVICE from San_UserService service where service.User.Id=:userId");
         query.setParameter("userId", userId);
 
-        List<San_Service> services = (List<San_Service>) query.getResultList();
-        return services;
+        List<San_UserService> userServices = (List<San_UserService>) query.getResultList();
+        return userServices;
     }
 
     @Override
@@ -48,4 +39,8 @@ public class DaoService extends San_Crud implements IDaoService {
         return services;
     }
 
+    @Override
+    protected Class getDomainClass() {
+        return San_Service.class;
+    }
 }

@@ -1,21 +1,19 @@
 package com.example.san.Service;
 
-import com.example.san.Model.BaseModel.San_User;
-
-import java.util.List;
+import com.example.san.Model.Bussiness.ActionResult;
 
 
 public interface ISrvUser {
 
-    San_User Save(String username,String password);
+    ActionResult Save(String username, String password, Boolean isAdmin);
 
-    Boolean remove(long userId);
+    ActionResult remove(long userId);
 
-    San_User edit(long id,String userName,String password);
+    ActionResult edit(long id, String userName, String password);
 
-    List<San_User> getAll();
+    ActionResult getAll();
 
-    San_User getUserByUserName(String userName);
+    ActionResult getUserByUserName(String userName);
 
 
 

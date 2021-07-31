@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 @Entity(name = "San_UserService")
 @Getter @Setter @NoArgsConstructor
-public class San_UserService {
+public class San_UserService extends BaseEntity {
 
     @javax.persistence.Id
     @Column(name = "ID")

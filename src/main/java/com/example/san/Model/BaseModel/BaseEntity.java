@@ -26,11 +26,11 @@ public class BaseEntity {
     private San_User updateBy;
 
     @Column(name = "createDateAndTime")
-    private Timestamp createDateAndTime;
+    private Timestamp createDateAndTime=new Timestamp(System.currentTimeMillis());
 
 
     @Column(name = "lastUpdateDateAndTime")
-    private Timestamp lastUpdateDateAndTime;
+    private Timestamp lastUpdateDateAndTime=new Timestamp(System.currentTimeMillis());
 
     @ManyToOne
     @JoinColumn(name = "deletedBy")

@@ -14,7 +14,7 @@ import javax.persistence.Entity;
 @Getter
 @Setter
 @NoArgsConstructor
-public class MainService extends Thread{
+public class MainService extends Thread {
 
 
     private San_UserService userService;
@@ -24,15 +24,16 @@ public class MainService extends Thread{
 
     @Override
     public void run() {
-        System.out.println("Main Srvice is running!!!!!!!!!!");
 
-        San_Service service = userService.getService();
+
+        System.out.println("Main Srvice is running!!!!!!!!!!");
         San_User user = userService.getUser();
 
+        San_Service service = userService.getService();
         long cost = service.getCost();
-
         user.setCredit(user.getCredit() - cost);
         userService.setCredit(userService.getCredit() - 1);
+
 
         iDaoUserService.Save(userService);
 

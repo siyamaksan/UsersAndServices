@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "SAN_SERVICE")
@@ -35,7 +36,7 @@ public class San_Service extends BaseEntity {
     private Timestamp EndTime;
 
     @OneToMany(mappedBy = "Service", cascade = CascadeType.REMOVE)
-    private List<San_UserService> userServices;
+    private List<San_UserService> userServices=new ArrayList<>();;
 
 
     public San_Service(long capacity, long cost, String name, Timestamp startTime, Timestamp endTime) {

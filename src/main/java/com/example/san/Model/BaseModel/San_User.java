@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "San_User")
@@ -17,23 +18,25 @@ public class San_User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "id_Sequence")
     @SequenceGenerator(name = "id_Sequence", sequenceName = "ID_SEQ")
     private long Id;
-
+    @Column(unique = true)
     private String UserName;
 
     private String Password;
-    
-    @ManyToMany(mappedBy = "users")
-    private List<San_Authority> authorities;
 
-    private Boolean isActive;
+    @ManyToMany(mappedBy = "users", cascade = CascadeType.MERGE)
+    private List<San_Authority> authorities = new ArrayList<>();
 
-    private long Credit;
+    private Boolean isActive=true;
 
-    @OneToMany(mappedBy = "Service",cascade = CascadeType.REMOVE)
-    private List<San_UserService> userServices;
+    private long Credit=0;
+
+    @OneToMany(mappedBy = "Service", cascade = CascadeType.REMOVE)
+    private List<San_UserService> userServices = new ArrayList<>();
 
     public San_User(String userName, String password) {
-        UserName = userName;
-        Password = password;
+        this.UserName = userName;
+        this.Password = password;
+
+
     }
 }

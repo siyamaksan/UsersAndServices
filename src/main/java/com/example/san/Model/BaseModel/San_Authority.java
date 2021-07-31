@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Table(name = "Authority")
-public class San_Authority {
+public class San_Authority extends BaseEntity {
     @javax.persistence.Id
     @Column(name = "ID")
     @GeneratedValue(strategy= GenerationType.SEQUENCE, generator = "id_Sequence")
@@ -21,9 +21,12 @@ public class San_Authority {
     private long Id;
 
     @Enumerated(EnumType.STRING)
+    @Column(unique = true)
     private Roles Name;
 
-
+    public San_Authority(Roles role) {
+        this.Name = role;
+    }
 
     @ManyToMany
     private List<San_User> users;
