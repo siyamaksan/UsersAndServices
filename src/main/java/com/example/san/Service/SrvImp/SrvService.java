@@ -103,16 +103,12 @@ public class SrvService implements ISrvService {
     }
 
     @Override
-    public ActionResult getAllRelatedServices(long userId) {
+    public ActionResult getAllRelatedServices(String userId) {
         try {
 
-            List<San_UserService> userService= (List<San_UserService>) iDaoService.getUserService(userId);
-            List<San_Service> services=new ArrayList<>();
-            for (San_UserService us:userService  ) {
-                 services.add(us.getService());
+            List<San_Service> services = iDaoService.getUserService(userId);
 
-            }
-            return new ActionResult(services,0, "OK");
+            return new ActionResult(services, 0, "OK");
         } catch (Exception e) {
             System.out.println(e);
             return new ActionResult(1, "FAIL");
@@ -130,7 +126,8 @@ public class SrvService implements ISrvService {
 
         try {
             San_Service service = (San_Service) iDaoService.getById(serviceId);
-            service.setIsActive(true);
+            if (service != null)
+                service.setIsActive(true);
 
             return new ActionResult(iDaoService.Update(service), 0, "OK");
         } catch (Exception e) {
@@ -144,8 +141,8 @@ public class SrvService implements ISrvService {
         try {
             San_Service service = (San_Service) iDaoService.getById(serviceId);
             service.setIsActive(false);
-            return new ActionResult(iDaoService.Update(service),0,"OK");
-        }catch (Exception e) {
+            return new ActionResult(iDaoService.Update(service), 0, "OK");
+        } catch (Exception e) {
             System.out.println(e);
             return new ActionResult(1, "FAIL");
 
@@ -156,7 +153,7 @@ public class SrvService implements ISrvService {
     private Timestamp setServiceDuring(Timestamp startTime, int during) {
 
         long oldTime = startTime.getTime();
-        long t = 12  * 60 * 60 * 1000;
+        long t = 12 * 60 * 60 * 1000;
 
         return new Timestamp(oldTime + t);
 

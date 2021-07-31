@@ -22,7 +22,7 @@ public class DaoUser extends San_Crud implements IDaoUser {
     @Override
     public San_User findByUserName(String UserName) {
         try {
-            Query query = entityManager.createQuery("select User from San_User User where User.UserName=:UserName");
+            Query query = entityManager.createQuery("select User from San_User User where User.username=:UserName");
             query.setParameter("UserName", UserName);
 
             San_User user = (San_User) query.getSingleResult();

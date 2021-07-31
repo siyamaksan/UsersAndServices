@@ -66,13 +66,13 @@ public abstract class San_Crud<T, E extends Serializable> implements ISan_Crud<T
     @Override
     public <E> E getById(long entityId) {
         try {
-            Query query = entityManager.createQuery("select e from " + domainClass.getName() + " e where e.Id=:id");
+            Query query = entityManager.createQuery("select e from " + domainClass.getName() + " e where e.id=:id");
             query.setParameter("id", entityId);
 
             return (E) query.getSingleResult();
         }catch (Exception e){
-            List<E> s=new ArrayList<>();
-            return (E) s.get(0);
+
+            return (E) null;
         }
 
     }

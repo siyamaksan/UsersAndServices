@@ -19,7 +19,7 @@ public interface ISrvService {
 
     ActionResult getAllActiveServices();
 
-    ActionResult getAllRelatedServices(long userId);
+    ActionResult getAllRelatedServices(String  userId);
 
 
     List<San_Service> getByName(String name);

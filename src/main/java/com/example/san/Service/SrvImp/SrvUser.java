@@ -8,6 +8,7 @@ import com.example.san.Model.BaseModel.San_User;
 import com.example.san.Service.ISrvUser;
 import com.example.san.Util.Enums.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -26,7 +27,8 @@ public class SrvUser implements ISrvUser {
         try {
             San_Authority authority = (San_Authority) idaoAuthority.getById(1);
             if (iDaoUser.findByUserName(username) != null) {
-                San_User user = new San_User(username, password);
+                BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+                San_User user = new San_User(username, passwordEncoder.encode(password));
                 user.getAuthorities().add(new San_Authority(Roles.ROLE_ADMIN));
 
                 return new ActionResult((San_User) iDaoUser.Save(user), 0, "OK");
@@ -62,7 +64,7 @@ public class SrvUser implements ISrvUser {
         try {
             San_User user = (San_User) iDaoUser.getById(id);
             if (userName != null)
-                user.setUserName(userName);
+                user.setUsername(userName);
             if (password != null)
                 user.setPassword(password);
             user.setLastUpdateDateAndTime(new Timestamp(System.currentTimeMillis()));

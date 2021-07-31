@@ -1,5 +1,6 @@
 package com.example.san.Model.BaseModel;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +22,7 @@ public class San_Service extends BaseEntity {
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "id_Sequence")
     @SequenceGenerator(name = "id_Sequence", sequenceName = "ID_SEQ")
-    private long Id;
+    private long id;
 
     private long Cost;
 
@@ -35,8 +36,13 @@ public class San_Service extends BaseEntity {
 
     private Timestamp EndTime;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "Service", cascade = CascadeType.REMOVE)
     private List<San_UserService> userServices=new ArrayList<>();;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "service", cascade = CascadeType.REMOVE)
+    private List<San_proccess> proccesses=new ArrayList<>();;
 
 
     public San_Service(long capacity, long cost, String name, Timestamp startTime, Timestamp endTime) {

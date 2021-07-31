@@ -5,13 +5,17 @@ import com.example.san.Model.Bussiness.ActionResult;
 public interface ISrvProcess {
 
 
-    ActionResult increaseUserCredit(long userId, long amount) ;
+    ActionResult increaseUserCredit(long userId, long amount);
 
     ActionResult decreaseUserCredite(long userId, long amount);
 
-    ActionResult invokeService(long serviceId, long userId );
+    ActionResult invokeService(long serviceId, long userId);
 
     ActionResult addUserToService(long userId, long SeviceId);
+
+    ActionResult getUserProcessHistory(String userId);
+
+    ActionResult getAllProcessHistory();
 
 
 }

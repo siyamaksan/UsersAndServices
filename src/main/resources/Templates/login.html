@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns:spring="http://www.w3.org/1999/XSL/Transform">
+<head>
+    <meta charset="UTF-8">
+    <title>service and User testing</title>
+    <link href="lib/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="lib/style.css" rel="stylesheet">
+
+    <script src="lib/jquery/jquery-3.5.0.min.js"></script>
+    <script src="lib/bootstrap/bootstrap.min.js"></script>
+
+</head>
+<body>
+<div xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+    <section id="main">
+        <div class="container">
+            <div class="row">
+                <div id="login" class="col-5">
+                    <form id="login-form" action="doLogin" method="post">
+
+                        <div class="form-group">
+                            <label style="color: white" for="username">نام کاربری</label>
+                            <input type="text" class="form-control login-form-input" name='username' id="username"
+                                   placeholder="نام کاربری">
+                        </div>
+                        <div class="form-group">
+                            <label style="color: white" for="password">رمز عبور</label>
+                            <input type="password" name='password' class="form-control login-form-input" id="password"
+                                   placeholder="رمز عبور">
+                        </div>
+
+                        <div style="text-align: center">
+                            <button id="login-form-submit" type="submit" class="btn btn-outline-light" value="Login">
+                                ورود
+                            </button>
+                        </div>
+                        <p>
+                            ADMIN : username: san---------password:123
+                        </p>
+                        <p>
+                            USER : username: man---------password:123
+                        </p>
+                    </form>
+                </div>
+            </div>
+            <div style="margin: 7px;background-color: rgba(0, 0, 0, .6);border-radius: 10px;">
+
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>

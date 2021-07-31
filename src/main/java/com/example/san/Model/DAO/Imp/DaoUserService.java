@@ -5,22 +5,27 @@ import com.example.san.Model.BaseModel.San_UserService;
 import com.example.san.Model.DAO.IDaoUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
-@Service
+@Transactional
+@Repository
 public class DaoUserService extends San_Crud implements IDaoUserService {
-    @Autowired
+
+    @PersistenceContext
     private EntityManager entityManager;
 
 
     @Override
     public San_UserService findByUserAndService(long serviceId, long userId) {
         try {
-            Query query = entityManager.createQuery("select us from San_UserService us where us.Service.Id=:s and us.User.Id=:u");
+            Query query = entityManager.createQuery("select us from San_UserService us where us.Service.id=:s and us.User.id=:u");
             query.setParameter("s", serviceId);
             query.setParameter("u", userId);
 
