@@ -1,43 +1,44 @@
 package com.example.san.Model.BaseModel;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MappedSuperclass;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
-import java.sql.Timestamp;
-import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 @MappedSuperclass
 public class BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "createdBy")
-    private San_User createdBy;
+    private User createdBy;
 
     @ManyToOne
     @JoinColumn(name = "updateBy")
-    private San_User updateBy;
+    private User updateBy;
 
     @Column(name = "createDateAndTime")
-    private Timestamp createDateAndTime=new Timestamp(System.currentTimeMillis());
+    private LocalDateTime createDateAndTime=LocalDateTime.now();
 
 
     @Column(name = "lastUpdateDateAndTime")
-    private Timestamp lastUpdateDateAndTime=new Timestamp(System.currentTimeMillis());
+    private LocalDateTime lastUpdateDateAndTime= LocalDateTime.now();
 
     @ManyToOne
     @JoinColumn(name = "deletedBy")
-    private San_User deletedBy;
+    private User deletedBy;
 
     @Column(name = "deleteDateAndTime")
-    private Timestamp deleteDateAndTime;
+    private LocalDateTime deleteDateAndTime;
 
 
 }

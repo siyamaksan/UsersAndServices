@@ -5,7 +5,7 @@ import com.example.san.Model.Bussiness.ActionResult;
 
 public interface ISrvUser {
 
-    ActionResult Save(String username, String password, Boolean isAdmin);
+    ActionResult save(String username, String password, Boolean isAdmin);
 
     ActionResult remove(long userId);
 

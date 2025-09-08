@@ -1,18 +1,19 @@
 package com.example.san.Controller;
 
-import com.example.san.Model.BaseModel.San_Service;
+import com.example.san.Model.BaseModel.SanService;
 import com.example.san.Model.Bussiness.ActionResult;
 import com.example.san.Service.ISrvService;
+import com.example.san.Service.Security.SecurityContextHolder;
+import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
-import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
@@ -25,7 +26,7 @@ public class ServiceContoller {
     @Secured("ROLE_ADMIN")
     @RequestMapping(value = "/getAll", method = RequestMethod.GET)
     public ActionResult getAllServices() {
-        return srvService.getAll(new San_Service());
+        return srvService.getAll();
     }
 
     @Secured({"ROLE_ADMIN"})
@@ -37,12 +38,12 @@ public class ServiceContoller {
     @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @RequestMapping(value = "/getmyservices", method = RequestMethod.GET)
     public ActionResult getAllRelatedServices(Principal principal) {
-        return srvService.getAllRelatedServices(principal.getName());
+        return srvService.getAllRelatedServices(SecurityContextHolder.currentUser().getProfileId());
     }
 
     @Secured("ROLE_ADMIN")
     @RequestMapping(value = "/search", method = RequestMethod.POST)
-    public List<San_Service> getByName(@RequestParam String name) {
+    public List<SanService> getByName(@RequestParam String name) {
         return srvService.getByName(name);
     }
 
@@ -63,7 +64,7 @@ public class ServiceContoller {
     public ActionResult createNewService(@RequestParam String name,
                                          @RequestParam long cost,
                                          @RequestParam long capa,
-                                         @RequestParam Timestamp startTime) {
+                                         @RequestParam LocalDateTime startTime) {
         return srvService.save(name, cost, capa, startTime);
     }
 
@@ -79,7 +80,7 @@ public class ServiceContoller {
                                       @RequestParam(required = false) String name,
                                       @RequestParam(required = false) long cost,
                                       @RequestParam(required = false) long capa,
-                                      @RequestParam(required = false) Timestamp startTime) {
+                                      @RequestParam(required = false) LocalDateTime startTime) {
 
 
         return srvService.edit(serviceId, name, cost, capa, startTime);

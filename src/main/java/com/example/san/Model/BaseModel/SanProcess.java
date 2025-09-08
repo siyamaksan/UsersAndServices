@@ -1,20 +1,22 @@
 package com.example.san.Model.BaseModel;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
-import java.sql.Timestamp;
 
 @Entity(name = "San_proccess")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class San_proccess extends BaseEntity {
+@Builder
+public class SanProcess extends BaseEntity {
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "id_Sequence")
@@ -22,12 +24,13 @@ public class San_proccess extends BaseEntity {
     private long id;
     @JsonIgnore
     @ManyToOne(cascade = CascadeType.MERGE)
-    private San_User user;
+    private User user;
+
     @JsonIgnore
     @ManyToOne(cascade = CascadeType.MERGE)
-    private San_Service service;
+    private SanService sanService;
 
-    private Timestamp invokeDateAndTime;
+    private LocalDateTime invokeDateAndTime;
 
     private Boolean isSuccess = false;
 

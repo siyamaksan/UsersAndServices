@@ -2,12 +2,11 @@ package com.example.san.Model.BaseModel;
 
 import com.example.san.Util.Enums.Roles;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -15,7 +14,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Table(name = "Authority")
-public class San_Authority extends BaseEntity {
+public class Authority extends BaseEntity {
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "id_Sequence")
@@ -26,13 +25,13 @@ public class San_Authority extends BaseEntity {
     @Column(unique = true)
     private Roles Name;
 
-    public San_Authority(Roles role) {
+    public Authority(Roles role) {
         this.Name = role;
     }
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
-    private Set<San_User> users;
+    private Set<User> users;
 
 
 }

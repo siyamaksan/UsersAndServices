@@ -1,13 +1,13 @@
 package com.example.san.Model.BaseModel;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class San_Service extends BaseEntity {
+public class SanService extends BaseEntity {
 
     @Id
     @Column(name = "ID")
@@ -28,28 +28,28 @@ public class San_Service extends BaseEntity {
 
     private long capacity;
 
-    private String ServiceName;
+    private String name;
 
-    private Boolean isActive = false;
+    private Boolean active = false;
 
-    private Timestamp startTime;
+    private LocalDateTime startTime;
 
-    private Timestamp EndTime;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "Service", cascade = CascadeType.REMOVE)
-    private List<San_UserService> userServices=new ArrayList<>();;
+    private LocalDateTime EndTime;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "service", cascade = CascadeType.REMOVE)
-    private List<San_proccess> proccesses=new ArrayList<>();;
+    @OneToMany(mappedBy = "sanService", cascade = CascadeType.REMOVE)
+    private List<UserService> userServices=new ArrayList<>();;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "sanService", cascade = CascadeType.REMOVE)
+    private List<SanProcess> processes=new ArrayList<>();;
 
 
-    public San_Service(long capacity, long cost, String name, Timestamp startTime, Timestamp endTime) {
+    public SanService(long capacity, long cost, String name, LocalDateTime startTime, LocalDateTime endTime) {
 
         this.capacity = capacity;
         this.Cost = cost;
-        this.ServiceName = name;
+        this.name = name;
         this.startTime = startTime;
         this.EndTime = endTime;
 

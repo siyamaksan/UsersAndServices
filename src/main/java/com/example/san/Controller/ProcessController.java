@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
-
 @RestController
 @RequestMapping(value = "/process")
 public class ProcessController {
@@ -32,7 +30,7 @@ public class ProcessController {
     public ActionResult decreaseUserCredite(@RequestParam long userId,
                                         @RequestParam long amount) {
 
-        return srvProcess.decreaseUserCredite(userId,amount);
+        return srvProcess.decreaseUserCredit(userId,amount);
 
     }
 
@@ -51,13 +49,14 @@ public class ProcessController {
     }
 
     @Secured("ROLE_ADMIN")
-    @RequestMapping(value = "/getreport", method = RequestMethod.POST)
+    @RequestMapping(value = "/", method = RequestMethod.POST)
     public ActionResult getAllProcessReport() {
         return srvProcess.getAllProcessHistory();
     }
+
     @Secured({"ROLE_ADMIN","ROLE_USER"})
     @RequestMapping(value = "/getuserreport", method = RequestMethod.POST)
-    public ActionResult getUserProcessReport(@RequestParam long userId, Principal principal) {
-        return srvProcess.getUserProcessHistory(principal.getName());
+    public ActionResult getUserProcessReport(@RequestParam long userId) {
+        return srvProcess.getUserProcessHistory(userId);
     }
 }

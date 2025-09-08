@@ -1,28 +1,27 @@
 package com.example.san.Service;
 
-import com.example.san.Model.BaseModel.San_Service;
+import com.example.san.Model.BaseModel.SanService;
 import com.example.san.Model.Bussiness.ActionResult;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ISrvService {
 
 
-    ActionResult save(String name, long cost, long capa, Timestamp startTime);
+    ActionResult save(String name, long cost, long capa, LocalDateTime startTime);
 
     ActionResult remove(long serviceId);
 
-    ActionResult edit(long serviceId, String name, long cost, long capa, Timestamp startTime);
+    ActionResult edit(long serviceId, String name, long cost, long capa, LocalDateTime startTime);
 
-    ActionResult getAll(San_Service service);
+    ActionResult getAll();
 
     ActionResult getAllActiveServices();
 
-    ActionResult getAllRelatedServices(String  userId);
+    ActionResult getAllRelatedServices(Long  userId);
 
-
-    List<San_Service> getByName(String name);
+    List<SanService> getByName(String name);
 
     ActionResult activateService(long serviceId);
 

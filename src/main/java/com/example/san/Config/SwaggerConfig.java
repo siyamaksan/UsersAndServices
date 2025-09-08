@@ -1,40 +1,62 @@
 package com.example.san.Config;
 
-import com.google.common.base.Predicates;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.servers.Server;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.google.common.base.Predicate;
 
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.BasicAuth;
-import springfox.documentation.service.SecurityScheme;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.List;
 
-import static springfox.documentation.builders.PathSelectors.regex;
-import static com.google.common.base.Predicates.or;
 
 
 @Configuration
-@EnableSwagger2
-public class SwaggerConfig  extends WebMvcConfigurerAdapter {
+public class SwaggerConfig {
+
     @Bean
-    public Docket apiDocket() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .select()
-                .paths(PathSelectors.any())
-                .apis(RequestHandlerSelectors.basePackage("com.example.san.Controller"))
-                .build();
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+            .info(new Info()
+                .title("San API Documentation")
+                .version("1.0.0")
+                .description("API documentation for San application")
+                .contact(new Contact()
+                    .name("Development Team")
+                    .email("dev@company.com"))
+                .license(new License()
+                    .name("Apache 2.0")
+                    .url("http://www.apache.org/licenses/LICENSE-2.0")))
+            .servers(List.of(
+                new Server()
+                    .url("http://localhost:8080")
+                    .description("Development Server"),
+                new Server()
+                    .url("https://api.company.com")
+                    .description("Production Server")
+            ));
     }
 
+    @Bean
+    public GroupedOpenApi publicApi() {
+        return GroupedOpenApi.builder()
+            .group("public")
+            .pathsToMatch("/api/**")
+            .packagesToScan("com.example.san.controller")
+            .build();
+    }
 
+    @Bean
+    public GroupedOpenApi adminApi() {
+        return GroupedOpenApi.builder()
+            .group("admin")
+            .pathsToMatch("/admin/**")
+            .packagesToScan("com.example.san.controller")
+            .build();
+    }
 }

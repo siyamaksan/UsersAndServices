@@ -1,10 +1,8 @@
 package com.example.san.Controller;
 
 
-import com.example.san.Model.BaseModel.San_User;
+import com.example.san.Model.BaseModel.User;
 import com.example.san.Service.Security.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.support.SessionStatus;
 
-import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 
 @RestController
@@ -27,7 +24,7 @@ public class LoginController {
         // read principal out of security context and set it to session
         UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         validatePrinciple(authentication.getPrincipal());
-        San_User loggedInUser = ((UserService) authentication.getPrincipal()).getUserDetails();
+        User loggedInUser = ((UserService) authentication.getPrincipal()).getUserDetails();
 
         return "Logged In!!!";
     }

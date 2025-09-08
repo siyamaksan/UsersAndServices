@@ -1,162 +1,161 @@
 package com.example.san.Service.SrvImp;
 
-import com.example.san.Model.BaseModel.San_Service;
-import com.example.san.Model.BaseModel.San_UserService;
+import com.example.san.Model.BaseModel.SanService;
 import com.example.san.Model.Bussiness.ActionResult;
-import com.example.san.Model.DAO.IDaoService;
 import com.example.san.Service.ISrvService;
+import com.example.san.repository.ServiceRepository;
+import java.time.LocalDateTime;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class SrvService implements ISrvService {
 
-    @Autowired
-    private IDaoService iDaoService;
+  @Autowired
+  private ServiceRepository iServiceRepository;
 
-    @Override
-    public ActionResult save(String name, long cost, long capa, Timestamp startTime) {
-        try {
-            Timestamp endTime = this.setServiceDuring(startTime, 12);
-            San_Service service = new San_Service(cost, capa, name, startTime, endTime);
+  @Override
+  public ActionResult save(String name, long cost, long capa, LocalDateTime startTime) {
+    try {
+      LocalDateTime endTime = this.setServiceDuring(startTime);
+      SanService sanService = new SanService(cost, capa, name, startTime, endTime);
 
-            return new ActionResult((San_Service) iDaoService.Save(service), 0, "OK");
-        } catch (Exception e) {
-            System.out.println(e);
-            return new ActionResult(1, "FAIL");
+      return new ActionResult(iServiceRepository.save(sanService));
+    } catch (Exception e) {
 
-        }
-    }
-
-    @Override
-    public ActionResult remove(long ServiceId) {
-
-        try {
-            San_Service service = (San_Service) iDaoService.getById(ServiceId);
-            service.setIsActive(false);
-            service.setDeleteDateAndTime(new Timestamp(System.currentTimeMillis()));
-            iDaoService.Update(service);
-            return new ActionResult(0, "OK");
-        } catch (Exception e) {
-            System.out.println(e);
-            return new ActionResult(1, "FAIL");
-
-        }
+      return ActionResult.SIMPLE_FAILED;
 
     }
+  }
 
-    @Override
-    public ActionResult edit(long serviceId, String name, long cost, long capa, Timestamp startTime) {
-        try {
-            San_Service oldService = (San_Service) iDaoService.getById(serviceId);
-            if (name != null)
-                oldService.setServiceName(name);
-            if (capa != 0)
-                oldService.setCapacity(capa);
-            if (cost != 0)
-                oldService.setCost(cost);
-            if (startTime != null)
-                oldService.setStartTime(startTime);
+  @Override
+  public ActionResult remove(long ServiceId) {
 
+    try {
+      SanService sanService = iServiceRepository.getById(ServiceId);
+      sanService.setActive(false);
+      sanService.setDeleteDateAndTime(LocalDateTime.now());
+      iServiceRepository.save(sanService);
+      return ActionResult.SIMPLE_DONE;
+    } catch (Exception e) {
 
-            oldService.setLastUpdateDateAndTime(new Timestamp(System.currentTimeMillis()));
-
-            San_Service newService = (San_Service) iDaoService.Update(oldService);
-            return new ActionResult(newService, 0, "OK");
-        } catch (Exception e) {
-            System.out.println(e);
-            return new ActionResult(1, "FAIL");
-
-        }
-
+      return ActionResult.SIMPLE_FAILED;
 
     }
 
-    @Override
-    public ActionResult getAll(San_Service service) {
+  }
 
-        try {
-            return new ActionResult(iDaoService.getAll(service), 0, "OK");
+  @Override
+  public ActionResult edit(long serviceId, String name, long cost, long capa,
+      LocalDateTime startTime) {
+    try {
+      SanService oldSanService = iServiceRepository.getById(serviceId);
+      if (name != null) {
+        oldSanService.setName(name);
+      }
+      if (capa != 0) {
+        oldSanService.setCapacity(capa);
+      }
+      if (cost != 0) {
+        oldSanService.setCost(cost);
+      }
+      if (startTime != null) {
+        oldSanService.setStartTime(startTime);
+      }
 
-        } catch (Exception e) {
-            System.out.println(e);
-            return new ActionResult(1, "FAIL");
+      oldSanService.setLastUpdateDateAndTime(LocalDateTime.now());
 
-        }
-    }
+      SanService newSanService = iServiceRepository.save(oldSanService);
+      return new ActionResult(newSanService);
+    } catch (Exception e) {
 
-
-    @Override
-    public ActionResult getAllActiveServices() {
-        try {
-            return new ActionResult(iDaoService.getAllActive(Service.class), 0, "OK");
-
-        } catch (Exception e) {
-            System.out.println(e);
-            return new ActionResult(1, "FAIL");
-
-        }
-    }
-
-    @Override
-    public ActionResult getAllRelatedServices(String userId) {
-        try {
-
-            List<San_Service> services = iDaoService.getUserService(userId);
-
-            return new ActionResult(services, 0, "OK");
-        } catch (Exception e) {
-            System.out.println(e);
-            return new ActionResult(1, "FAIL");
-
-        }
-    }
-
-    @Override
-    public List<San_Service> getByName(String name) {
-        return iDaoService.findByName(name);
-    }
-
-    @Override
-    public ActionResult activateService(long serviceId) {
-
-        try {
-            San_Service service = (San_Service) iDaoService.getById(serviceId);
-            if (service != null)
-                service.setIsActive(true);
-
-            return new ActionResult(iDaoService.Update(service), 0, "OK");
-        } catch (Exception e) {
-            System.out.println(e);
-            return new ActionResult(1, "FAIL");
-        }
-    }
-
-    @Override
-    public ActionResult deactivateService(long serviceId) {
-        try {
-            San_Service service = (San_Service) iDaoService.getById(serviceId);
-            service.setIsActive(false);
-            return new ActionResult(iDaoService.Update(service), 0, "OK");
-        } catch (Exception e) {
-            System.out.println(e);
-            return new ActionResult(1, "FAIL");
-
-        }
+      return ActionResult.SIMPLE_FAILED;
 
     }
 
-    private Timestamp setServiceDuring(Timestamp startTime, int during) {
 
-        long oldTime = startTime.getTime();
-        long t = 12 * 60 * 60 * 1000;
+  }
 
-        return new Timestamp(oldTime + t);
+  @Override
+  public ActionResult getAll() {
+
+    try {
+      return new ActionResult(iServiceRepository.findAll());
+
+    } catch (Exception e) {
+
+      return ActionResult.SIMPLE_FAILED;
 
     }
+  }
+
+
+  @Override
+  public ActionResult getAllActiveServices() {
+    try {
+      return new ActionResult(
+          iServiceRepository.findAllByActive(true));
+
+    } catch (Exception e) {
+
+      return ActionResult.SIMPLE_FAILED;
+
+    }
+  }
+
+  @Override
+  public ActionResult getAllRelatedServices(Long userId) {
+    try {
+
+      List<SanService> sanServices = iServiceRepository.getAllByUserServices_user_id(userId);
+
+      return new ActionResult(sanServices);
+    } catch (Exception e) {
+
+      return ActionResult.SIMPLE_FAILED;
+
+    }
+  }
+
+  @Override
+  public List<SanService> getByName(String name) {
+    return iServiceRepository.findByName(name);
+  }
+
+  @Override
+  public ActionResult activateService(long serviceId) {
+
+    try {
+      SanService sanService = (SanService) iServiceRepository.getById(serviceId);
+      if (sanService != null) {
+        sanService.setActive(true);
+      }
+
+      return new ActionResult(iServiceRepository.save(sanService));
+    } catch (Exception e) {
+
+      return ActionResult.SIMPLE_FAILED;
+    }
+  }
+
+  @Override
+  public ActionResult deactivateService(long serviceId) {
+    try {
+      SanService sanService = (SanService) iServiceRepository.getById(serviceId);
+      sanService.setActive(false);
+      return new ActionResult(iServiceRepository.save(sanService));
+    } catch (Exception e) {
+
+      return ActionResult.SIMPLE_FAILED;
+
+    }
+
+  }
+
+  private LocalDateTime setServiceDuring(LocalDateTime startTime) {
+    return startTime.plusHours(12);
+
+  }
 
 }

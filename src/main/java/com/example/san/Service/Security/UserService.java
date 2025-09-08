@@ -1,6 +1,6 @@
 package com.example.san.Service.Security;
 
-import com.example.san.Model.BaseModel.San_User;
+import com.example.san.Model.BaseModel.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,30 +11,30 @@ import java.util.stream.Collectors;
 
 
 public class UserService implements UserDetails {
-    private San_User san_user;
+    private User _user;
 
-    public UserService(San_User user) {
-        this.san_user = user;
+    public UserService(User user) {
+        this._user = user;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return san_user.getAuthorities().stream().map(authority -> new SimpleGrantedAuthority(authority.getName().toString())).collect(Collectors.toList());
+        return _user.getAuthorities().stream().map(authority -> new SimpleGrantedAuthority(authority.getName().toString())).collect(Collectors.toList());
     }
 
     public long getId() {
-        return san_user.getId();
+        return _user.getId();
     }
 
     @Override
     public String getPassword() {
 
-        return san_user.getPassword();
+        return _user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return san_user.getUsername();
+        return _user.getUsername();
     }
 
     @Override
@@ -57,7 +57,7 @@ public class UserService implements UserDetails {
         return true;
     }
 
-    public San_User getUserDetails() {
-        return san_user;
+    public User getUserDetails() {
+        return _user;
     }
 }

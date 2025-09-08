@@ -1,7 +1,5 @@
 package com.example.san.Controller;
 
-import com.example.san.Model.BaseModel.San_Service;
-import com.example.san.Model.BaseModel.San_User;
 import com.example.san.Model.Bussiness.ActionResult;
 import com.example.san.Service.SrvImp.SrvUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.security.Principal;
-import java.util.List;
 
 @RestController
 public class UserController {
@@ -26,7 +21,7 @@ public class UserController {
                                       @RequestParam String password,
                                       @RequestParam(required = false, defaultValue = "false") Boolean isAdmin
     ) {
-        return srvUser.Save(username, password, isAdmin);
+        return srvUser.save(username, password, isAdmin);
 
     }
 

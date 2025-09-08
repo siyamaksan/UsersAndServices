@@ -1,177 +1,231 @@
 package com.example.san.Service.SrvImp;
 
-import com.example.san.Model.BaseModel.San_Service;
-import com.example.san.Model.BaseModel.San_User;
-import com.example.san.Model.BaseModel.San_UserService;
-import com.example.san.Model.BaseModel.San_proccess;
+import com.example.san.Model.BaseModel.SanProcess;
+import com.example.san.Model.BaseModel.SanService;
+import com.example.san.Model.BaseModel.User;
+import com.example.san.Model.BaseModel.UserService;
 import com.example.san.Model.Bussiness.ActionResult;
-import com.example.san.Model.DAO.IDaoProcess;
-import com.example.san.Model.DAO.IDaoService;
-import com.example.san.Model.DAO.IDaoUser;
-import com.example.san.Model.DAO.IDaoUserService;
 import com.example.san.Service.ISrvProcess;
 import com.example.san.Service.MainService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.example.san.repository.ProcessRepository;
+import com.example.san.repository.ServiceRepository;
+import com.example.san.repository.UserRepository;
+import com.example.san.repository.UserServiceRepository;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
-
-@Service
+// Refactored SrvProcess.java
+@org.springframework.stereotype.Service
+@Transactional
+@Slf4j
 public class SrvProcess implements ISrvProcess {
 
-    @Autowired
-    private IDaoUser iDaoUser;
+  private final UserRepository userDao;
+  private final ServiceRepository serviceDao;
+  private final UserServiceRepository userServiceDao;
+  private final ProcessRepository processDao;
+  private final MainService mainService;
 
-    @Autowired
-    private IDaoService iDaoService;
 
-    @Autowired
-    private IDaoUserService iDaoUserService;
+  public SrvProcess(UserRepository userDao,
+      ServiceRepository serviceDao,
+      UserServiceRepository userServiceDao,
+      ProcessRepository processDao,
+      MainService mainService) {
+    this.userDao = userDao;
+    this.serviceDao = serviceDao;
+    this.userServiceDao = userServiceDao;
+    this.processDao = processDao;
+    this.mainService = mainService;
+  }
 
-    @Autowired
-    private IDaoProcess iDaoProcess;
-
-    @Override
-    public ActionResult increaseUserCredit(long userId, long amount) {
-        try {
-            San_User user = (San_User) iDaoUser.getById(userId);
-
-            long oldCredit = user.getCredit();
-            long newCredit = oldCredit + amount;
-            user.setCredit(newCredit);
-
-            return new ActionResult((San_User) iDaoUser.Update(user), 0, "OK");
-        } catch (Exception e) {
-            System.out.println(e);
-            return new ActionResult(1, "FAIL");
-
-        }
+  @Override
+  @Transactional
+  public ActionResult increaseUserCredit(long userId, long amount) {
+    if (amount <= 0) {
+      return new ActionResult("Amount must be positive");
     }
 
-    @Override
-    public ActionResult decreaseUserCredite(long userId, long amount) {
-        try {
-            San_User user = (San_User) iDaoUser.getById(userId);
+    try {
+      Optional<User> userOptional = userDao.findById(userId);
+      if (userOptional.isEmpty()) {
+        return new ActionResult("User not found");
+      }
 
-            long oldCredit = user.getCredit();
-            if (oldCredit > amount) {
-                long newCredit = oldCredit - amount;
-                user.setCredit(newCredit);
-            }
-            return new ActionResult((San_User) iDaoUser.Update(user), 0, "OK");
-        } catch (Exception e) {
-            System.out.println(e);
-            return new ActionResult(1, "FAIL");
+      User user = userOptional.get();
 
-        }
+      long newCredit = user.getCredit() + amount;
+      user.setCredit(newCredit);
 
+      User updatedUser = userDao.save(user);
+      return new ActionResult(updatedUser);
+
+    } catch (Exception e) {
+      log.error("Error increasing user credit for userId: {}, amount: {}", userId, amount, e);
+      throw new ServiceException("Failed to increase user credit", e);
+    }
+  }
+
+
+  @Transactional
+  @Override
+  public ActionResult decreaseUserCredit(long userId, long amount) {
+    if (amount <= 0) {
+      return new ActionResult("Amount must be positive");
     }
 
+    try {
+      User user = userDao.getById(userId);
+      if (user == null) {
+        return new ActionResult("User not found");
+      }
 
-    @Override
-    public ActionResult addUserToService(long userId, long serviceId) {
+      if (user.getCredit() < amount) {
+        return new ActionResult("Insufficient credit");
+      }
 
-        try {
-            San_User user = (San_User) iDaoUser.getById(userId);
-            San_Service service = (San_Service) iDaoService.getById(serviceId);
+      user.setCredit(user.getCredit() - amount);
+      User updatedUser = userDao.save(user);
+      return new ActionResult(updatedUser);
 
-            if (user != null && service != null) {
-
-                San_UserService userService = new San_UserService();
-
-                userService.setService(service);
-
-                userService.setUser(user);
-
-                userService.setCredit(service.getCapacity());
-
-                return new ActionResult((San_UserService) iDaoUserService.Save(userService), 0, "OK");
-            } else
-                throw new Exception();
-
-        } catch (Exception e) {
-            System.out.println(e);
-            return new ActionResult(1, "FAIL");
-        }
+    } catch (Exception e) {
+      log.error("Error decreasing user credit for userId: {}, amount: {}", userId, amount, e);
+      throw new ServiceException("Failed to decrease user credit", e);
     }
+  }
 
+  @Override
+  @Transactional
+  public ActionResult addUserToService(long userId, long serviceId) {
+    try {
+      Optional<User> userOptional = userDao.findById(userId);
+      if (userOptional.isEmpty()) {
+        return new ActionResult("User not found");
+      }
+      User user = userOptional.get();
 
-    @Transactional
-    public ActionResult invokeService(long userId, long serviceId) {
+      Optional<SanService> sanServiceOptional = serviceDao.findById(serviceId);
 
-        try {
-            San_UserService userService = iDaoUserService.findByUserAndService(serviceId, userId);
+      if (sanServiceOptional.isEmpty()) {
+        return new ActionResult("Service not found");
+      }
+      SanService sanService = sanServiceOptional.get();
 
-            San_User user = userService.getUser();
-            San_Service service = userService.getService();
-            if (userService.getService() != null || userService.getUser() != null) {
+      // Check if user is already subscribed to this service
+      UserService existingUserService = userServiceDao.findByUser_idAndSanService_id(serviceId, userId);
+      if (existingUserService != null) {
+        return new ActionResult("User is already subscribed to this service");
+      }
 
-                if (user.getCredit() > service.getCost() && userService.getCredit() > 0) {
+      UserService userService = UserService.builder()
+          .sanService(sanService)
+          .user(user)
+          .credit(sanService.getCapacity())
+          .build();
 
-                    long cost = service.getCost();
-                    user.setCredit(user.getCredit() - cost);
-                    userService.setCredit(userService.getCredit() - 1);
+      UserService savedUserService = userServiceDao.save(userService);
+      return new ActionResult(savedUserService);
 
-                    MainService mainService = new MainService();
-
-                    iDaoUserService.Save(userService);
-                    mainService.setUserService(userService);
-
-                    mainService.start();
-
-                    this.setProcessHistory(user, service);
-                }
-
-
-                return new ActionResult(0, "OK");
-            } else
-                throw new Exception();
-        } catch (Exception e) {
-            System.out.println(e);
-            return new ActionResult(1, "FAIL");
-
-        }
-
+    } catch (Exception e) {
+      log.error("Error adding user {} to service {}", userId, serviceId, e);
+      throw new ServiceException("Failed to add user to service", e);
     }
+  }
 
-    private void setProcessHistory(San_User user, San_Service service) throws Exception {
-        try {
-            San_proccess proccess = new San_proccess();
+  @Override
+  @Transactional
+  public ActionResult invokeService(long userId, long serviceId) {
+    try {
+      UserService userService = userServiceDao.findByUser_idAndSanService_id(serviceId, userId);
 
-            proccess.setUser(user);
-            proccess.setService(service);
+      if (userService == null) {
+        return new ActionResult("User service subscription not found");
+      }
 
-            proccess.setInvokeDateAndTime(new Timestamp(System.currentTimeMillis()));
+      User user = userService.getUser();
+      SanService sanService = userService.getSanService();
 
+      if (user == null || sanService == null) {
+        return new ActionResult("Invalid user service data");
+      }
 
-            iDaoProcess.Save(proccess);
-        } catch (Exception e) {
-            throw new Exception();
-        }
+      long serviceCost = sanService.getCost();
 
+      if (user.getCredit() < serviceCost) {
+        return new ActionResult("Insufficient user credit");
+      }
+
+      if (userService.getCredit() <= 0) {
+        return new ActionResult("Service usage limit exceeded");
+      }
+
+      // Deduct credits
+      user.setCredit(user.getCredit() - serviceCost);
+      userService.setCredit(userService.getCredit() - 1);
+
+      // Save changes
+      userServiceDao.save(userService);
+
+      // Record process history
+      recordProcessHistory(user, sanService);
+
+      // Execute service asynchronously
+      mainService.executeService(userService);
+
+      return ActionResult.SIMPLE_DONE;
+
+    } catch (Exception e) {
+      log.error("Error invoking service {} for user {}", serviceId, userId, e);
+      throw new ServiceException("Failed to invoke service", e);
     }
+  }
 
-    @Override
-    public ActionResult getUserProcessHistory(String username) {
-        try {
+  private void recordProcessHistory(User user, SanService sanService) {
+    try {
+      SanProcess process = SanProcess.builder()
+          .user(user)
+          .sanService(sanService)
+          .invokeDateAndTime(LocalDateTime.from(Instant.now()))
+          .build();
 
-            return new ActionResult(iDaoProcess.getUserProccess(username), 0, "OK");
-        } catch (Exception e) {
-            return new ActionResult(1, "FAIL");
+      processDao.save(process);
 
-        }
+    } catch (Exception e) {
+      log.error("Failed to record process history for user {} and service {}",
+          user.getId(), sanService.getId(), e);
+      // Don't throw exception here as it's not critical for the main operation
     }
+  }
 
-    @Override
-    public ActionResult getAllProcessHistory() {
-        try {
-            return new ActionResult(iDaoProcess.getAllProccess(), 0, "OK");
-        } catch (Exception e) {
-            return new ActionResult(1, "FAIL");
+  @Override
+  @Transactional(readOnly = true)
+  public ActionResult getUserProcessHistory(Long userId) {
+    try {
+      if (userId == null ) {
+        return new ActionResult("Username cannot be empty");
+      }
 
-        }
+      return new ActionResult(processDao.findByUser_id(userId));
+
+    } catch (Exception e) {
+      log.error("Error getting user process history for username: {}", userId, e);
+      throw new ServiceException("Failed to get user process history", e);
     }
+  }
 
+  @Override
+  @Transactional(readOnly = true)
+  public ActionResult getAllProcessHistory() {
+    try {
+      return new ActionResult(processDao.findAll());
 
+    } catch (Exception e) {
+      log.error("Error getting all process history", e);
+      throw new ServiceException("Failed to get all process history", e);
+    }
+  }
 }
