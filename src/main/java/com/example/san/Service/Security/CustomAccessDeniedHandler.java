@@ -37,7 +37,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
       response.getWriter().write(jsonResponse);
     } else {
-      response.sendRedirect("/access-denied");
+      response.sendRedirect("/login");
     }
   }
 }

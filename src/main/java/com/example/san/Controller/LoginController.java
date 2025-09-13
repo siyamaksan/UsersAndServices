@@ -17,10 +17,8 @@ import java.security.Principal;
 @RestController
 public class LoginController {
 
-
-
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String postLogin(@RequestParam String username, @RequestParam String password, Principal principal) {
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public String postLogin(@RequestParam(required = false) String username, @RequestParam(required = false) String password, Principal principal) {
         // read principal out of security context and set it to session
         UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         validatePrinciple(authentication.getPrincipal());

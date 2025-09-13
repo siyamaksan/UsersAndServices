@@ -43,7 +43,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
       response.getWriter().write(jsonResponse);
     } else {
       // Redirect to login page for web requests
-      response.sendRedirect("/login?error=unauthorized");
+      response.sendRedirect("/login");
     }
   }
 }

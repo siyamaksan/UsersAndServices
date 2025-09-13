@@ -8,6 +8,10 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,7 +28,7 @@ public class ServiceContoller {
     private ISrvService srvService;
 
     @Secured("ROLE_ADMIN")
-    @RequestMapping(value = "/getAll", method = RequestMethod.GET)
+    @GetMapping(value = "/")
     public ActionResult getAllServices() {
         return srvService.getAll();
     }
@@ -60,7 +64,7 @@ public class ServiceContoller {
     }
 
     @Secured("ROLE_ADMIN")
-    @RequestMapping(value = "/newservice", method = RequestMethod.POST)
+    @PostMapping(value = "/")
     public ActionResult createNewService(@RequestParam String name,
                                          @RequestParam long cost,
                                          @RequestParam long capa,
@@ -69,13 +73,13 @@ public class ServiceContoller {
     }
 
     @Secured("ROLE_ADMIN")
-    @RequestMapping(value = "/remove", method = RequestMethod.POST)
+    @DeleteMapping(value = "/")
     public ActionResult removeService(@RequestParam long serviceId) {
         return srvService.remove(serviceId);
     }
 
     @Secured("ROLE_ADMIN")
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    @PutMapping(value = "/")
     public ActionResult updateService(@RequestParam long serviceId,
                                       @RequestParam(required = false) String name,
                                       @RequestParam(required = false) long cost,

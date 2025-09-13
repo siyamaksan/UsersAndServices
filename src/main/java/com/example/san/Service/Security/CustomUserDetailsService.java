@@ -27,7 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     log.debug("Loading user by username: {}", username);
 
     try {
-      User user = userDao.findByUsername(          username);
+      User user = userDao.findByUsername(username);
 
       if (user == null) {
         log.warn("User not found: {}", username);
