@@ -9,6 +9,7 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,7 +19,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
-import java.security.Key;
 
 @Component
 @Slf4j
@@ -48,7 +48,7 @@ public class JwtTokenProvider {
     CustomUserPrincipal userPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
     Date expiryDate = new Date(System.currentTimeMillis() + jwtExpirationInMs);
 
-    Claims claims = Jwts.claims().build();
+    Map<String, Object> claims = new HashMap<>();
     claims.put("userId", userPrincipal.getId());
     claims.put("email", userPrincipal.getEmail());
     claims.put("authorities", userPrincipal.getAuthorities().stream()

@@ -11,9 +11,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 
 
 // Improved ActionResult class
@@ -98,25 +96,25 @@ public class ActionResult {
   }
 
   //list Detail without status
-  public ActionResult(Collection detail) {
+  public ActionResult(Collection<?> detail) {
     this(CoreStatusEnum.DONE, null, detail, null, null);
   }
 
-  public ActionResult(Collection detail, Long totalCount) {
+  public ActionResult(Collection<?> detail, Long totalCount) {
     this(CoreStatusEnum.DONE, null, detail, totalCount, null);
   }
 
-  public ActionResult(Collection detail, Long totalCount, String description) {
+  public ActionResult(Collection<?> detail, Long totalCount, String description) {
     this(CoreStatusEnum.DONE, detail, totalCount, description);
   }
 
-  public ActionResult(Collection detail, String description) {
+  public ActionResult(Collection<?> detail, String description) {
     this(CoreStatusEnum.DONE, null, detail, null, description);
   }
 
 
   //list Linkedhashmap
-  public ActionResult(IStatusEnum statusEnum, Collection<? extends LinkedHashMap> detail) {
+  public ActionResult(IStatusEnum statusEnum, Collection<? extends LinkedHashMap<?, ?>> detail) {
     this(statusEnum, null, detail, null, null);
   }
 
@@ -135,12 +133,12 @@ public class ActionResult {
         this(statusEnum, null, detail, null, null);
     }*/
 
-  public ActionResult(IStatusEnum statusEnum, Collection detail, Long totalCount) {
+  public ActionResult(IStatusEnum statusEnum, Collection<?> detail, Long totalCount) {
     this(statusEnum, null, detail, totalCount, null);
   }
 
 
-  public ActionResult(IStatusEnum statusEnum, Collection detail, Long totalCount,
+  public ActionResult(IStatusEnum statusEnum, Collection<?> detail, Long totalCount,
       String description) {
     this(statusEnum, null, detail, totalCount, description);
   }

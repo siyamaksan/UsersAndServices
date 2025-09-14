@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 // Custom UserDetailsService
 @Service
 @Transactional(readOnly = true)
@@ -27,12 +29,14 @@ public class CustomUserDetailsService implements UserDetailsService {
     log.debug("Loading user by username: {}", username);
 
     try {
-      User user = userDao.findByUsername(username);
+      Optional<User> userOpt = userDao.findByUsername(username);
 
-      if (user == null) {
+      if (userOpt.isEmpty()) {
         log.warn("User not found: {}", username);
         throw new UsernameNotFoundException("User not found: " + username);
       }
+
+      User user = userOpt.get();
 
       if (!user.getIsActive()) {
         log.warn("User account is disabled: {}", username);

@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+import org.hibernate.annotations.BatchSize;
 
 @Getter
 @Setter
@@ -18,27 +18,27 @@ import lombok.Setter;
 @MappedSuperclass
 public class BaseEntity {
 
-    @ManyToOne
+    @ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @JoinColumn(name = "createdBy")
+    @BatchSize(size = 20) // Batch loading برای createdBy
     private User createdBy;
 
-    @ManyToOne
+    @ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @JoinColumn(name = "updateBy")
+    @BatchSize(size = 20) // Batch loading برای updateBy
     private User updateBy;
 
     @Column(name = "createDateAndTime")
-    private LocalDateTime createDateAndTime=LocalDateTime.now();
-
+    private LocalDateTime createDateAndTime = LocalDateTime.now();
 
     @Column(name = "lastUpdateDateAndTime")
-    private LocalDateTime lastUpdateDateAndTime= LocalDateTime.now();
+    private LocalDateTime lastUpdateDateAndTime = LocalDateTime.now();
 
-    @ManyToOne
+    @ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @JoinColumn(name = "deletedBy")
+    @BatchSize(size = 20) // Batch loading برای deletedBy
     private User deletedBy;
 
     @Column(name = "deleteDateAndTime")
     private LocalDateTime deleteDateAndTime;
-
-
 }

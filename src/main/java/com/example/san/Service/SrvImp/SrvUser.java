@@ -5,12 +5,13 @@ import com.example.san.Model.BaseModel.User;
 import com.example.san.Model.Bussiness.ActionResult;
 import com.example.san.Service.ISrvUser;
 import com.example.san.Util.Enums.Roles;
+import com.example.san.enums.CoreStatusEnum;
 import com.example.san.repository.AuthorityRepository;
 import com.example.san.repository.UserRepository;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,20 +23,17 @@ public class SrvUser implements ISrvUser {
   @Autowired
   private AuthorityRepository idaoAuthorityRepository;
 
-  @Autowired
-  private ApplicationContext applicationContext;
-
 
   @Override
   public ActionResult save(String username, String password, Boolean isAdmin) {
     try {
       Authority authority = new Authority();
       if (isAdmin) {
-        authority = idaoAuthorityRepository.getById(1L);
+        authority = idaoAuthorityRepository.findById(1L).orElse(null);
       } else {
-        authority = idaoAuthorityRepository.getById(2L);
+        authority = idaoAuthorityRepository.findById(2L).orElse(null);
       }
-      if (iUserRepository.findByUsername(username) != null) {
+      if (iUserRepository.findByUsername(username).isPresent()) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         User user = new User(username, passwordEncoder.encode(password));
         Set<Authority> authoritySet = user.getAuthorities();
@@ -58,7 +56,7 @@ public class SrvUser implements ISrvUser {
   @Override
   public ActionResult remove(long userId) {
     try {
-      User user = (User) iUserRepository.getById(userId);
+      User user = iUserRepository.findById(userId).orElse(null);
       user.setIsActive(false);
       user.setDeleteDateAndTime( LocalDateTime.now());
       iUserRepository.save(user);
@@ -73,7 +71,7 @@ public class SrvUser implements ISrvUser {
   @Override
   public ActionResult edit(long id, String userName, String password) {
     try {
-      User user = (User) iUserRepository.getById(id);
+      User user = iUserRepository.findById(id).orElse(null);
       if (userName != null) {
         user.setUsername(userName);
       }
@@ -106,14 +104,12 @@ public class SrvUser implements ISrvUser {
 
   @Override
   public ActionResult getUserByUserName(String userName) {
-    try {
-      return new ActionResult((User) iUserRepository.findByUsername(userName));
+      return iUserRepository.findByUsername(userName)
+          .map(user -> new ActionResult(user))
+          .orElse(CoreStatusEnum.NOT_FOUND);
 
-    } catch (Exception e) {
 
-      return  ActionResult.SIMPLE_FAILED;
 
-    }
 
   }
 

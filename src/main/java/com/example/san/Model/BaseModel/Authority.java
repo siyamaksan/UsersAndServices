@@ -6,6 +6,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.util.Set;
 
@@ -14,6 +17,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Table(name = "Authority")
+@BatchSize(size = 20) // Batch loading برای بهبود عملکرد
 public class Authority extends BaseEntity {
     @Id
     @Column(name = "ID")
@@ -30,8 +34,8 @@ public class Authority extends BaseEntity {
     }
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @BatchSize(size = 20) // Batch loading برای users
+    @Fetch(FetchMode.SUBSELECT) // استفاده از subselect برای بهبود عملکرد
     private Set<User> users;
-
-
 }

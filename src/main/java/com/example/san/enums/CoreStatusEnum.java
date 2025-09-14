@@ -1,18 +1,30 @@
 package com.example.san.enums;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 public enum CoreStatusEnum implements IStatusEnum {
   UNFILLED_NECESSARY_FIELD,
   FAILED,
-  DONE;
+  DONE(true),
+  NOT_FOUND(false);
+
+  private final boolean isSuccessStatus;
+  private String localizedMessage = null;
+
+
+  CoreStatusEnum() {
+    this(true);
+  }
+
+  private CoreStatusEnum( boolean isSuccessStatus) {
+    this.isSuccessStatus = isSuccessStatus;
+  }
 
 
   @Override
   public String getPrefix() {
-    return "";
+    return "CS";
   }
 
   @Override
@@ -22,11 +34,13 @@ public enum CoreStatusEnum implements IStatusEnum {
 
   @Override
   public boolean isSuccessStatus() {
-    return false;
+    return isSuccessStatus;
   }
 
   @Override
   public String getMessage() {
     return "";
   }
+
+
 }
