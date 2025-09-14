@@ -218,7 +218,7 @@ public class AuthController {
      */
     private LoginResponse.UserInfo createUserInfo(User user) {
         List<String> authorities = user.getAuthorities().stream()
-            .map(authority -> authority.getName().toString())
+            .map(authority -> authority.getRole().toString())
             .collect(Collectors.toList());
 
         return LoginResponse.UserInfo.builder()

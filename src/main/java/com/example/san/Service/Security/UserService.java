@@ -19,7 +19,7 @@ public class UserService implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return _user.getAuthorities().stream().map(authority -> new SimpleGrantedAuthority(authority.getName().toString())).collect(Collectors.toList());
+        return _user.getAuthorities().stream().map(authority -> new SimpleGrantedAuthority(authority.getRole().toString())).collect(Collectors.toList());
     }
 
     public long getId() {

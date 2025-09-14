@@ -12,7 +12,7 @@ import java.util.List;
 @Transactional
 public interface ProcessRepository extends JpaRepository<SanProcess,Long> {
 
-    public List<SanProcess> findByUser_id(Long userId);
+    List<SanProcess> findByUser_id(Long userId);
 
 
 }

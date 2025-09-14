@@ -26,7 +26,7 @@ public class CustomUserPrincipal implements UserDetails {
 
   public static CustomUserPrincipal create(User user) {
     List<GrantedAuthority> authorities = user.getAuthorities().stream()
-        .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName().toString().toUpperCase()))
+        .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRole().toString().toUpperCase()))
         .collect(Collectors.toList());
 
     return new CustomUserPrincipal(

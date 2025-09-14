@@ -27,10 +27,10 @@ public class Authority extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(unique = true)
-    private Roles Name;
+    private Roles role;
 
     public Authority(Roles role) {
-        this.Name = role;
+        this.role = role;
     }
 
     @JsonIgnore
