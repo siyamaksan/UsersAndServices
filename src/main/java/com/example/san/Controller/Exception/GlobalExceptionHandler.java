@@ -37,27 +37,27 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleSpringAuthenticationException(
             AuthenticationException ex, WebRequest request) {
         
-        ErrorCode errorCode;
+        ExceptionCode exceptionCode;
         if (ex instanceof BadCredentialsException) {
-            errorCode = ErrorCode.AUTHENTICATION_FAILED;
+            exceptionCode = ExceptionCode.AUTHENTICATION_FAILED;
         } else if (ex instanceof DisabledException) {
-            errorCode = ErrorCode.ACCOUNT_DISABLED;
+            exceptionCode = ExceptionCode.ACCOUNT_DISABLED;
         } else if (ex instanceof LockedException) {
-            errorCode = ErrorCode.ACCOUNT_LOCKED;
+            exceptionCode = ExceptionCode.ACCOUNT_LOCKED;
         } else {
-            errorCode = ErrorCode.AUTHENTICATION_FAILED;
+            exceptionCode = ExceptionCode.AUTHENTICATION_FAILED;
         }
         
-        log.error("Authentication error: {} - {}", errorCode.getCode(), ex.getMessage());
+        log.error("Authentication error: {} - {}", exceptionCode.getCode(), ex.getMessage());
         
         ErrorResponse errorResponse = ErrorResponse.fromErrorCode(
-            errorCode, 
+            exceptionCode,
             ex.getMessage(), 
             request.getDescription(false),
             messageSource
         );
         
-        return ResponseEntity.status(errorCode.getHttpStatus()).body(errorResponse);
+        return ResponseEntity.status(exceptionCode.getHttpStatus()).body(errorResponse);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
@@ -79,16 +79,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleCustomAuthenticationException(
             com.example.san.Controller.Exception.AuthenticationException ex, WebRequest request) {
         
-        log.error("Custom authentication error: {} - {}", ex.getErrorCode().getCode(), ex.getMessage());
+        log.error("Custom authentication error: {} - {}", ex.getExceptionCode().getCode(), ex.getMessage());
         
         ErrorResponse errorResponse = ErrorResponse.fromErrorCode(
-            ex.getErrorCode(),
+            ex.getExceptionCode(),
             ex.getMessage(),
             request.getDescription(false),
             messageSource
         );
         
-        return ResponseEntity.status(ex.getErrorCode().getHttpStatus()).body(errorResponse);
+        return ResponseEntity.status(ex.getExceptionCode().getHttpStatus()).body(errorResponse);
     }
 
     /**
@@ -123,16 +123,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleCustomValidationException(
             ValidationException ex, WebRequest request) {
         
-        log.error("Custom validation error: {} - {}", ex.getErrorCode().getCode(), ex.getMessage());
+        log.error("Custom validation error: {} - {}", ex.getExceptionCode().getCode(), ex.getMessage());
         
         ErrorResponse errorResponse = ErrorResponse.fromErrorCode(
-            ex.getErrorCode(),
+            ex.getExceptionCode(),
             ex.getMessage(),
             request.getDescription(false),
             messageSource
         );
         
-        return ResponseEntity.status(ex.getErrorCode().getHttpStatus()).body(errorResponse);
+        return ResponseEntity.status(ex.getExceptionCode().getHttpStatus()).body(errorResponse);
     }
 
     /**
@@ -142,16 +142,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleUserException(
             UserException ex, WebRequest request) {
         
-        log.error("User error: {} - {}", ex.getErrorCode().getCode(), ex.getMessage());
+        log.error("User error: {} - {}", ex.getExceptionCode().getCode(), ex.getMessage());
         
         ErrorResponse errorResponse = ErrorResponse.fromErrorCode(
-            ex.getErrorCode(),
+            ex.getExceptionCode(),
             ex.getMessage(),
             request.getDescription(false),
             messageSource
         );
         
-        return ResponseEntity.status(ex.getErrorCode().getHttpStatus()).body(errorResponse);
+        return ResponseEntity.status(ex.getExceptionCode().getHttpStatus()).body(errorResponse);
     }
 
     /**
@@ -164,7 +164,7 @@ public class GlobalExceptionHandler {
         log.error("Argument error: {}", ex.getMessage());
         
         ErrorResponse errorResponse = ErrorResponse.fromErrorCode(
-            ErrorCode.VALIDATION_ERROR,
+            ExceptionCode.VALIDATION_ERROR,
             ex.getMessage(),
             request.getDescription(false),
             messageSource
@@ -183,12 +183,12 @@ public class GlobalExceptionHandler {
         log.error("Unexpected error: {}", ex.getMessage(), ex);
         
         ErrorResponse errorResponse = ErrorResponse.fromErrorCode(
-            ErrorCode.INTERNAL_SERVER_ERROR,
+            ExceptionCode.INTERNAL_SERVER_ERROR,
             "خطای داخلی سرور",
             request.getDescription(false),
             messageSource
         );
         
-        return ResponseEntity.status(ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus()).body(errorResponse);
+        return ResponseEntity.status(ExceptionCode.INTERNAL_SERVER_ERROR.getHttpStatus()).body(errorResponse);
     }
 }

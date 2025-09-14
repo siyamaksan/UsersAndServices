@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
  * Enum برای مدیریت کدهای خطا و کلیدهای پیام
  */
 @Getter
-public enum ErrorCode {
+public enum ExceptionCode {
     
     // خطاهای احراز هویت
     AUTHENTICATION_FAILED("AUTH_001", "error.auth.authentication.failed", HttpStatus.UNAUTHORIZED),
@@ -48,7 +48,7 @@ public enum ErrorCode {
     private final String messageKey;
     private final HttpStatus httpStatus;
     
-    ErrorCode(String code, String messageKey, HttpStatus httpStatus) {
+    ExceptionCode(String code, String messageKey, HttpStatus httpStatus) {
         this.code = code;
         this.messageKey = messageKey;
         this.httpStatus = httpStatus;
@@ -57,10 +57,10 @@ public enum ErrorCode {
     /**
      * دریافت ErrorCode بر اساس کد
      */
-    public static ErrorCode fromCode(String code) {
-        for (ErrorCode errorCode : values()) {
-            if (errorCode.getCode().equals(code)) {
-                return errorCode;
+    public static ExceptionCode fromCode(String code) {
+        for (ExceptionCode exceptionCode : values()) {
+            if (exceptionCode.getCode().equals(code)) {
+                return exceptionCode;
             }
         }
         return INTERNAL_SERVER_ERROR;

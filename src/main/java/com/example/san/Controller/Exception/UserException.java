@@ -8,20 +8,20 @@ import lombok.Getter;
 @Getter
 public class UserException extends RuntimeException {
     
-    private final ErrorCode errorCode;
+    private final ExceptionCode exceptionCode;
     
-    public UserException(ErrorCode errorCode) {
-        super(errorCode.getMessageKey()); // استفاده از getMessageKey به جای getMessage
-        this.errorCode = errorCode;
+    public UserException(ExceptionCode exceptionCode) {
+        super(exceptionCode.getMessageKey()); // استفاده از getMessageKey به جای getMessage
+        this.exceptionCode = exceptionCode;
     }
     
-    public UserException(ErrorCode errorCode, String details) {
-        super(errorCode.getMessageKey() + ": " + details); // استفاده از getMessageKey به جای getMessage
-        this.errorCode = errorCode;
+    public UserException(ExceptionCode exceptionCode, String details) {
+        super(exceptionCode.getMessageKey() + ": " + details); // استفاده از getMessageKey به جای getMessage
+        this.exceptionCode = exceptionCode;
     }
     
-    public UserException(ErrorCode errorCode, Throwable cause) {
-        super(errorCode.getMessageKey(), cause); // استفاده از getMessageKey به جای getMessage
-        this.errorCode = errorCode;
+    public UserException(ExceptionCode exceptionCode, Throwable cause) {
+        super(exceptionCode.getMessageKey(), cause); // استفاده از getMessageKey به جای getMessage
+        this.exceptionCode = exceptionCode;
     }
 }

@@ -1,6 +1,6 @@
 package com.example.san.Controller.DTO;
 
-import com.example.san.Controller.Exception.ErrorCode;
+import com.example.san.Controller.Exception.ExceptionCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,17 +31,17 @@ public class ErrorResponse {
     /**
      * ایجاد ErrorResponse از ErrorCode با MessageSource
      */
-    public static ErrorResponse fromErrorCode(ErrorCode errorCode, MessageSource messageSource) {
+    public static ErrorResponse fromErrorCode(ExceptionCode exceptionCode, MessageSource messageSource) {
         String message = messageSource.getMessage(
-            errorCode.getMessageKey(), 
+            exceptionCode.getMessageKey(),
             null, 
-            errorCode.getMessageKey(), // fallback
+            exceptionCode.getMessageKey(), // fallback
             LocaleContextHolder.getLocale()
         );
         
         return ErrorResponse.builder()
             .success(false)
-            .errorCode(errorCode.getCode())
+            .errorCode(exceptionCode.getCode())
             .message(message)
             .timestamp(LocalDateTime.now())
             .build();
@@ -50,17 +50,17 @@ public class ErrorResponse {
     /**
      * ایجاد ErrorResponse از ErrorCode با جزئیات اضافی
      */
-    public static ErrorResponse fromErrorCode(ErrorCode errorCode, String details, MessageSource messageSource) {
+    public static ErrorResponse fromErrorCode(ExceptionCode exceptionCode, String details, MessageSource messageSource) {
         String message = messageSource.getMessage(
-            errorCode.getMessageKey(), 
+            exceptionCode.getMessageKey(),
             null, 
-            errorCode.getMessageKey(), // fallback
+            exceptionCode.getMessageKey(), // fallback
             LocaleContextHolder.getLocale()
         );
         
         return ErrorResponse.builder()
             .success(false)
-            .errorCode(errorCode.getCode())
+            .errorCode(exceptionCode.getCode())
             .message(message)
             .details(details)
             .timestamp(LocalDateTime.now())
@@ -70,17 +70,17 @@ public class ErrorResponse {
     /**
      * ایجاد ErrorResponse از ErrorCode با مسیر
      */
-    public static ErrorResponse fromErrorCode(ErrorCode errorCode, String details, String path, MessageSource messageSource) {
+    public static ErrorResponse fromErrorCode(ExceptionCode exceptionCode, String details, String path, MessageSource messageSource) {
         String message = messageSource.getMessage(
-            errorCode.getMessageKey(), 
+            exceptionCode.getMessageKey(),
             null, 
-            errorCode.getMessageKey(), // fallback
+            exceptionCode.getMessageKey(), // fallback
             LocaleContextHolder.getLocale()
         );
         
         return ErrorResponse.builder()
             .success(false)
-            .errorCode(errorCode.getCode())
+            .errorCode(exceptionCode.getCode())
             .message(message)
             .details(details)
             .path(path)
@@ -93,15 +93,15 @@ public class ErrorResponse {
      */
     public static ErrorResponse validationError(Map<String, Object> validationErrors, String path, MessageSource messageSource) {
         String message = messageSource.getMessage(
-            ErrorCode.VALIDATION_ERROR.getMessageKey(), 
+            ExceptionCode.VALIDATION_ERROR.getMessageKey(),
             null, 
-            ErrorCode.VALIDATION_ERROR.getMessageKey(), // fallback
+            ExceptionCode.VALIDATION_ERROR.getMessageKey(), // fallback
             LocaleContextHolder.getLocale()
         );
         
         return ErrorResponse.builder()
             .success(false)
-            .errorCode(ErrorCode.VALIDATION_ERROR.getCode())
+            .errorCode(ExceptionCode.VALIDATION_ERROR.getCode())
             .message(message)
             .validationErrors(validationErrors)
             .path(path)
