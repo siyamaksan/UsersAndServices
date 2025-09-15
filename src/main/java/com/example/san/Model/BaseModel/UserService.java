@@ -9,6 +9,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +23,12 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(
+    name = "San_UserService",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"USER_ID", "SANSERVICE_ID"})
+    }
+)
 public class UserService extends BaseEntity {
 
     @Id

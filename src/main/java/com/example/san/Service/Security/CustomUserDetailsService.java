@@ -18,10 +18,10 @@ import java.util.Optional;
 @Slf4j
 public class CustomUserDetailsService implements UserDetailsService {
 
-  private final UserRepository userDao;
+  private final UserRepository userRepository;
 
-  public CustomUserDetailsService(UserRepository userDao) {
-    this.userDao = userDao;
+  public CustomUserDetailsService(UserRepository userRepository) {
+    this.userRepository = userRepository;
   }
 
   @Override
@@ -29,7 +29,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     log.debug("Loading user by username: {}", username);
 
     try {
-      Optional<User> userOpt = userDao.findByUsername(username);
+      Optional<User> userOpt = userRepository.findByUsername(username);
 
       if (userOpt.isEmpty()) {
         log.warn("User not found: {}", username);

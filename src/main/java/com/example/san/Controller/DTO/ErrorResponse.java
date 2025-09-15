@@ -1,6 +1,7 @@
 package com.example.san.Controller.DTO;
 
 import com.example.san.Controller.Exception.ExceptionCode;
+import com.example.san.enums.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,7 +32,7 @@ public class ErrorResponse {
     /**
      * ایجاد ErrorResponse از ErrorCode با MessageSource
      */
-    public static ErrorResponse fromErrorCode(ExceptionCode exceptionCode, MessageSource messageSource) {
+    public static ErrorResponse fromErrorCode(UserStatus exceptionCode, MessageSource messageSource) {
         String message = messageSource.getMessage(
             exceptionCode.getMessageKey(),
             null, 
@@ -50,7 +51,7 @@ public class ErrorResponse {
     /**
      * ایجاد ErrorResponse از ErrorCode با جزئیات اضافی
      */
-    public static ErrorResponse fromErrorCode(ExceptionCode exceptionCode, String details, MessageSource messageSource) {
+    public static ErrorResponse fromErrorCode(UserStatus exceptionCode, String details, MessageSource messageSource) {
         String message = messageSource.getMessage(
             exceptionCode.getMessageKey(),
             null, 
@@ -93,15 +94,15 @@ public class ErrorResponse {
      */
     public static ErrorResponse validationError(Map<String, Object> validationErrors, String path, MessageSource messageSource) {
         String message = messageSource.getMessage(
-            ExceptionCode.VALIDATION_ERROR.getMessageKey(),
+            UserStatus.VALIDATION_ERROR.getMessageKey(),
             null, 
-            ExceptionCode.VALIDATION_ERROR.getMessageKey(), // fallback
+            UserStatus.VALIDATION_ERROR.getMessageKey(), // fallback
             LocaleContextHolder.getLocale()
         );
         
         return ErrorResponse.builder()
             .success(false)
-            .errorCode(ExceptionCode.VALIDATION_ERROR.getCode())
+            .errorCode(UserStatus.VALIDATION_ERROR.getCode())
             .message(message)
             .validationErrors(validationErrors)
             .path(path)

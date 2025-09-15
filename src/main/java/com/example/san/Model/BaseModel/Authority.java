@@ -1,6 +1,6 @@
 package com.example.san.Model.BaseModel;
 
-import com.example.san.Util.Enums.Roles;
+import com.example.san.enums.RolesEnums;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -27,9 +27,9 @@ public class Authority extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(unique = true)
-    private Roles role;
+    private RolesEnums role;
 
-    public Authority(Roles role) {
+    public Authority(RolesEnums role) {
         this.role = role;
     }
 

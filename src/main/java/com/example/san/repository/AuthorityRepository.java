@@ -1,7 +1,7 @@
 package com.example.san.repository;
 
 import com.example.san.Model.BaseModel.Authority;
-import com.example.san.Util.Enums.Roles;
+import com.example.san.enums.RolesEnums;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
 public interface AuthorityRepository extends JpaRepository<Authority,Long> {
 
 
-  Authority findByRole(Roles roles);
+  Authority findByRole(RolesEnums rolesEnums);
 }

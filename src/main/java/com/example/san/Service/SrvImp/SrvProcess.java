@@ -1,5 +1,7 @@
 package com.example.san.Service.SrvImp;
 
+import com.example.san.Controller.Exception.UserException;
+import com.example.san.enums.UserStatus;
 import com.example.san.Model.BaseModel.SanProcess;
 import com.example.san.Model.BaseModel.SanService;
 import com.example.san.Model.BaseModel.User;
@@ -16,29 +18,30 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.service.spi.ServiceException;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 // Refactored SrvProcess.java
-@org.springframework.stereotype.Service
+@Service
 @Transactional
 @Slf4j
 public class SrvProcess implements ISrvProcess {
 
   private final UserRepository userDao;
-  private final ServiceRepository serviceDao;
-  private final UserServiceRepository userServiceDao;
+  private final ServiceRepository serviceRepository;
+  private final UserServiceRepository userServiceRepository;
   private final ProcessRepository processDao;
   private final MainService mainService;
 
 
   public SrvProcess(UserRepository userDao,
-      ServiceRepository serviceDao,
+      ServiceRepository serviceRepository,
       UserServiceRepository userServiceDao,
       ProcessRepository processDao,
-      MainService mainService) {
+      MainService mainService, UserServiceRepository userServiceRepository) {
     this.userDao = userDao;
-    this.serviceDao = serviceDao;
-    this.userServiceDao = userServiceDao;
+    this.serviceRepository = serviceRepository;
+    this.userServiceRepository = userServiceDao;
     this.processDao = processDao;
     this.mainService = mainService;
   }
@@ -106,18 +109,20 @@ public class SrvProcess implements ISrvProcess {
       if (userOptional.isEmpty()) {
         return new ActionResult("User not found");
       }
+
       User user = userOptional.get();
 
-      Optional<SanService> sanServiceOptional = serviceDao.findById(serviceId);
+      Optional<SanService> sanServiceOptional = serviceRepository.findById(serviceId);
 
       if (sanServiceOptional.isEmpty()) {
-        return new ActionResult("Service not found");
+        throw new UserException(UserStatus.USER_NOT_FOUND);
       }
       SanService sanService = sanServiceOptional.get();
 
       // Check if user is already subscribed to this service
-      UserService existingUserService = userServiceDao.findByUser_idAndSanService_id(serviceId, userId);
-      if (existingUserService != null) {
+      Optional<UserService> existingUserServiceOptional = userServiceRepository.findByUser_idAndSanService_id(
+          serviceId, userId);
+      if (existingUserServiceOptional.isEmpty()) {
         return new ActionResult("User is already subscribed to this service");
       }
 
@@ -127,7 +132,7 @@ public class SrvProcess implements ISrvProcess {
           .credit(sanService.getCapacity())
           .build();
 
-      UserService savedUserService = userServiceDao.save(userService);
+      UserService savedUserService = userServiceRepository.save(userService);
       return new ActionResult(savedUserService);
 
     } catch (Exception e) {
@@ -139,93 +144,66 @@ public class SrvProcess implements ISrvProcess {
   @Override
   @Transactional
   public ActionResult invokeService(long userId, long serviceId) {
-    try {
-      UserService userService = userServiceDao.findByUser_idAndSanService_id(serviceId, userId);
 
-      if (userService == null) {
-        return new ActionResult("User service subscription not found");
-      }
+    Optional<UserService> userServiceOptional = userServiceRepository.findByUser_idAndSanService_id(
+        serviceId, userId);
 
-      User user = userService.getUser();
-      SanService sanService = userService.getSanService();
-
-      if (user == null || sanService == null) {
-        return new ActionResult("Invalid user service data");
-      }
-
-      long serviceCost = sanService.getCost();
-
-      if (user.getCredit() < serviceCost) {
-        return new ActionResult("Insufficient user credit");
-      }
-
-      if (userService.getCredit() <= 0) {
-        return new ActionResult("Service usage limit exceeded");
-      }
-
-      // Deduct credits
-      user.setCredit(user.getCredit() - serviceCost);
-      userService.setCredit(userService.getCredit() - 1);
-
-      // Save changes
-      userServiceDao.save(userService);
-
-      // Record process history
-      recordProcessHistory(user, sanService);
-
-      // Execute service asynchronously
-      mainService.executeService(userService);
-
-      return ActionResult.SIMPLE_DONE;
-
-    } catch (Exception e) {
-      log.error("Error invoking service {} for user {}", serviceId, userId, e);
-      throw new ServiceException("Failed to invoke service", e);
+    if (userServiceOptional.isEmpty()) {
+      return new ActionResult("User service subscription not found");
     }
+
+    UserService userService = userServiceOptional.get();
+    User user = userService.getUser();
+    SanService sanService = userService.getSanService();
+
+    long serviceCost = sanService.getCost();
+
+    if (userService.getCredit() <= 0 || user.getCredit() < serviceCost) {
+      throw new UserException(UserStatus.INSUFFICIENT_INVENTORY);
+    }
+
+    // Deduct credits
+    user.setCredit(user.getCredit() - serviceCost);
+    userService.setCredit(userService.getCredit() - 1);
+
+    // Save changes
+    userServiceRepository.save(userService);
+
+    // Record process history
+    recordProcessHistory(user, sanService);
+
+    // Execute service asynchronously
+    mainService.executeService(userService);
+
+    return ActionResult.SIMPLE_DONE;
+
+
   }
 
   private void recordProcessHistory(User user, SanService sanService) {
-    try {
-      SanProcess process = SanProcess.builder()
-          .user(user)
-          .sanService(sanService)
-          .invokeDateAndTime(LocalDateTime.from(Instant.now()))
-          .build();
+    SanProcess process = SanProcess.builder()
+        .user(user)
+        .sanService(sanService)
+        .invokeDateAndTime(LocalDateTime.from(Instant.now()))
+        .build();
 
-      processDao.save(process);
-
-    } catch (Exception e) {
-      log.error("Failed to record process history for user {} and service {}",
-          user.getId(), sanService.getId(), e);
-      // Don't throw exception here as it's not critical for the main operation
-    }
+    processDao.save(process);
   }
 
   @Override
   @Transactional(readOnly = true)
   public ActionResult getUserProcessHistory(Long userId) {
-    try {
-      if (userId == null ) {
-        return new ActionResult("Username cannot be empty");
-      }
 
-      return new ActionResult(processDao.findByUser_id(userId));
+    return new ActionResult(processDao.findByUser_id(userId));
 
-    } catch (Exception e) {
-      log.error("Error getting user process history for username: {}", userId, e);
-      throw new ServiceException("Failed to get user process history", e);
-    }
   }
 
   @Override
   @Transactional(readOnly = true)
   public ActionResult getAllProcessHistory() {
-    try {
-      return new ActionResult(processDao.findAll());
 
-    } catch (Exception e) {
-      log.error("Error getting all process history", e);
-      throw new ServiceException("Failed to get all process history", e);
-    }
+    return new ActionResult(processDao.findAll());
+
+
   }
 }

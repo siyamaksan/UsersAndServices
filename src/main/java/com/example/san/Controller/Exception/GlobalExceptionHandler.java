@@ -1,9 +1,12 @@
 package com.example.san.Controller.Exception;
 
 import com.example.san.Controller.DTO.ErrorResponse;
+import com.example.san.enums.GeneralStatus;
+import com.example.san.enums.UserStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -37,15 +40,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleSpringAuthenticationException(
             AuthenticationException ex, WebRequest request) {
         
-        ExceptionCode exceptionCode;
+        UserStatus exceptionCode;
         if (ex instanceof BadCredentialsException) {
-            exceptionCode = ExceptionCode.AUTHENTICATION_FAILED;
+            exceptionCode = UserStatus.AUTHENTICATION_FAILED;
         } else if (ex instanceof DisabledException) {
-            exceptionCode = ExceptionCode.ACCOUNT_DISABLED;
+            exceptionCode = UserStatus.ACCOUNT_DISABLED;
         } else if (ex instanceof LockedException) {
-            exceptionCode = ExceptionCode.ACCOUNT_LOCKED;
+            exceptionCode = UserStatus.ACCOUNT_LOCKED;
         } else {
-            exceptionCode = ExceptionCode.AUTHENTICATION_FAILED;
+            exceptionCode = UserStatus.AUTHENTICATION_FAILED;
         }
         
         log.error("Authentication error: {} - {}", exceptionCode.getCode(), ex.getMessage());
@@ -59,6 +62,27 @@ public class GlobalExceptionHandler {
         
         return ResponseEntity.status(exceptionCode.getHttpStatus()).body(errorResponse);
     }
+    /**
+     * مدیریت خطاهای یکتایی دیتابیس (Unique Constraint Violation)
+     */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleUniqueConstraintViolation(
+        DataIntegrityViolationException ex, WebRequest request) {
+
+        GeneralStatus exceptionCode = GeneralStatus.DUPLICATE_RECORD;
+
+        log.error("Unique constraint violation: {} - {}", exceptionCode.getCode(), ex.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.fromErrorCode(
+            exceptionCode,
+            "This user already has this service.",
+            request.getDescription(false),
+            messageSource
+        );
+
+        return ResponseEntity.status(exceptionCode.getHttpStatus()).body(errorResponse);
+    }
+
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<Map<String, Object>> handleMethodNotSupported(HttpRequestMethodNotSupportedException ex) {
@@ -164,7 +188,7 @@ public class GlobalExceptionHandler {
         log.error("Argument error: {}", ex.getMessage());
         
         ErrorResponse errorResponse = ErrorResponse.fromErrorCode(
-            ExceptionCode.VALIDATION_ERROR,
+            UserStatus.VALIDATION_ERROR,
             ex.getMessage(),
             request.getDescription(false),
             messageSource
@@ -183,12 +207,12 @@ public class GlobalExceptionHandler {
         log.error("Unexpected error: {}", ex.getMessage(), ex);
         
         ErrorResponse errorResponse = ErrorResponse.fromErrorCode(
-            ExceptionCode.INTERNAL_SERVER_ERROR,
+            GeneralStatus.INTERNAL_SERVER_ERROR,
             "خطای داخلی سرور",
             request.getDescription(false),
             messageSource
         );
         
-        return ResponseEntity.status(ExceptionCode.INTERNAL_SERVER_ERROR.getHttpStatus()).body(errorResponse);
+        return ResponseEntity.status(GeneralStatus.INTERNAL_SERVER_ERROR.getHttpStatus()).body(errorResponse);
     }
 }

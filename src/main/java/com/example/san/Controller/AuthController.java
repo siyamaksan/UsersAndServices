@@ -2,9 +2,11 @@ package com.example.san.Controller;
 
 import com.example.san.Controller.DTO.LoginRequest;
 import com.example.san.Controller.DTO.LoginResponse;
-import com.example.san.Controller.Exception.ExceptionCode;
+import com.example.san.Controller.Exception.GeneralException;
+import com.example.san.enums.GeneralStatus;
+import com.example.san.enums.UserStatus;
 import com.example.san.Controller.Exception.UserException;
-import com.example.san.Controller.Utils.ResponseBuilder;
+import com.example.san.Controller.utils.ResponseBuilder;
 import com.example.san.Model.Bussiness.ActionResult;
 import com.example.san.Model.BaseModel.User;
 import com.example.san.Service.Security.JwtTokenProvider;
@@ -152,7 +154,7 @@ public class AuthController {
             
             if (!result.isSuccessful()) {
                 throw new UserException(
-                    ExceptionCode.USER_NOT_FOUND, "کاربر با نام کاربری " + username + " یافت نشد");
+                    UserStatus.USER_NOT_FOUND, "کاربر با نام کاربری " + username + " یافت نشد");
             }
             
             return ResponseEntity.ok(result);
@@ -160,7 +162,7 @@ public class AuthController {
             throw e; // Re-throw UserException to be handled by GlobalExceptionHandler
         } catch (Exception e) {
             log.error("Error getting user info: {}", e.getMessage());
-            throw new UserException(ExceptionCode.INTERNAL_SERVER_ERROR, "خطا در دریافت اطلاعات کاربر");
+            throw new GeneralException(GeneralStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -199,11 +201,11 @@ public class AuthController {
             
             if (!result.isSuccessful()) {
                 throw new UserException(
-                    ExceptionCode.USER_NOT_FOUND, "کاربر با نام کاربری " + username + " یافت نشد");
+                    UserStatus.USER_NOT_FOUND, "کاربر با نام کاربری " + username + " یافت نشد");
             }
             
             if (!(result.getDetail() instanceof User)) {
-                throw new UserException(ExceptionCode.USER_NOT_FOUND, "اطلاعات کاربر نامعتبر است");
+                throw new UserException(UserStatus.USER_NOT_FOUND, "اطلاعات کاربر نامعتبر است");
             }
             
             return (User) result.getDetail();
@@ -211,7 +213,7 @@ public class AuthController {
             throw e; // Re-throw UserException
         } catch (Exception e) {
             log.error("Error getting user info: {}", e.getMessage());
-            throw new UserException(ExceptionCode.INTERNAL_SERVER_ERROR, "خطا در دریافت اطلاعات کاربر");
+            throw new GeneralException(GeneralStatus.INTERNAL_SERVER_ERROR, "خطا در دریافت اطلاعات کاربر");
         }
     }
 

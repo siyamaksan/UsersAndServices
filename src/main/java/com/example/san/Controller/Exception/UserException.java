@@ -1,5 +1,6 @@
 package com.example.san.Controller.Exception;
 
+import com.example.san.enums.UserStatus;
 import lombok.Getter;
 
 /**
@@ -8,19 +9,19 @@ import lombok.Getter;
 @Getter
 public class UserException extends RuntimeException {
     
-    private final ExceptionCode exceptionCode;
+    private final UserStatus exceptionCode;
     
-    public UserException(ExceptionCode exceptionCode) {
+    public UserException(UserStatus exceptionCode) {
         super(exceptionCode.getMessageKey()); // استفاده از getMessageKey به جای getMessage
         this.exceptionCode = exceptionCode;
     }
     
-    public UserException(ExceptionCode exceptionCode, String details) {
+    public UserException(UserStatus exceptionCode, String details) {
         super(exceptionCode.getMessageKey() + ": " + details); // استفاده از getMessageKey به جای getMessage
         this.exceptionCode = exceptionCode;
     }
     
-    public UserException(ExceptionCode exceptionCode, Throwable cause) {
+    public UserException(UserStatus exceptionCode, Throwable cause) {
         super(exceptionCode.getMessageKey(), cause); // استفاده از getMessageKey به جای getMessage
         this.exceptionCode = exceptionCode;
     }

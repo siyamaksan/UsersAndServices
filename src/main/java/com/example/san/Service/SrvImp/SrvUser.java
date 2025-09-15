@@ -1,12 +1,12 @@
 package com.example.san.Service.SrvImp;
 
-import com.example.san.Controller.Exception.ExceptionCode;
+import com.example.san.enums.UserStatus;
 import com.example.san.Controller.Exception.UserException;
 import com.example.san.Model.BaseModel.Authority;
 import com.example.san.Model.BaseModel.User;
 import com.example.san.Model.Bussiness.ActionResult;
 import com.example.san.Service.ISrvUser;
-import com.example.san.Util.Enums.Roles;
+import com.example.san.enums.RolesEnums;
 import com.example.san.repository.AuthorityRepository;
 import com.example.san.repository.UserRepository;
 import java.time.LocalDateTime;
@@ -29,11 +29,11 @@ public class SrvUser implements ISrvUser {
   public ActionResult save(String username, String password, Boolean isAdmin) {
     Authority authority = new Authority();
 
-    authority = idaoAuthorityRepository.findByRole(isAdmin ? Roles.ROLE_ADMIN : Roles.ROLE_USER);
+    authority = idaoAuthorityRepository.findByRole(isAdmin ? RolesEnums.ROLE_ADMIN : RolesEnums.ROLE_USER);
 
     Optional<User> userOptional = iUserRepository.findByUsername(username);
     if (userOptional.isEmpty()) {
-      throw new UserException(ExceptionCode.USER_NOT_FOUND);
+      throw new UserException(UserStatus.USER_NOT_FOUND);
     }
 
     User user = userOptional.get();
@@ -52,7 +52,7 @@ public class SrvUser implements ISrvUser {
   @Override
   public ActionResult remove(long userId) {
     User user = iUserRepository.findById(userId)
-        .orElseThrow(() -> new UserException(ExceptionCode.USER_NOT_FOUND));
+        .orElseThrow(() -> new UserException(UserStatus.USER_NOT_FOUND));
 
     user.setIsActive(false);
 
@@ -68,7 +68,7 @@ public class SrvUser implements ISrvUser {
 
     Optional<User> userOptional = iUserRepository.findById(id);
     if (userOptional.isEmpty()) {
-      throw new UserException(ExceptionCode.USER_NOT_FOUND);
+      throw new UserException(UserStatus.USER_NOT_FOUND);
     }
     User user = userOptional.get();
     user.setUsername(userName);
@@ -90,7 +90,7 @@ public class SrvUser implements ISrvUser {
   public ActionResult getUserByUserName(String userName) {
     return iUserRepository.findByUsername(userName)
         .map(ActionResult::new)
-        .orElse(new ActionResult(ExceptionCode.USER_NOT_FOUND));
+        .orElse(new ActionResult(UserStatus.USER_NOT_FOUND));
   }
 
 }

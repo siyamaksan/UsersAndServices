@@ -3,7 +3,7 @@ package com.example.san.Controller;
 import com.example.san.Model.BaseModel.SanService;
 import com.example.san.Model.Bussiness.ActionResult;
 import com.example.san.Service.ISrvService;
-import com.example.san.Service.Security.SecurityContextHolder;
+import com.example.san.Util.SecurityUtils;
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -41,7 +41,7 @@ public class ServiceContoller {
     @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @RequestMapping(value = "/getmyservices", method = RequestMethod.GET)
     public ActionResult getAllRelatedServices(Principal principal) {
-        return srvService.getAllRelatedServices(SecurityContextHolder.currentUser().getProfileId());
+        return srvService.getAllRelatedServices(SecurityUtils.getCurrentUserId());
     }
 
     @Secured("ROLE_ADMIN")

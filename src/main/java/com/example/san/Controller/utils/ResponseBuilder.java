@@ -1,4 +1,4 @@
-package com.example.san.Controller.Utils;
+package com.example.san.Controller.utils;
 
 import com.example.san.Controller.DTO.LoginResponse;
 import org.springframework.http.HttpStatus;
