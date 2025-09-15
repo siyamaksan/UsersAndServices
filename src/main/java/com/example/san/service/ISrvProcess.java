@@ -1,8 +1,10 @@
 package com.example.san.service;
 
+import com.example.san.model.baseModel.SanProcess;
 import com.example.san.model.baseModel.User;
 import com.example.san.model.baseModel.UserService;
 import com.example.san.model.bussiness.ActionResult;
+import java.util.List;
 
 public interface ISrvProcess {
 
@@ -11,12 +13,12 @@ public interface ISrvProcess {
 
     User decreaseUserCredit(long userId, long amount);
 
-    ActionResult invokeService(long serviceId, long userId);
+    Object invokeService(long serviceId, long userId);
 
 
   UserService addUserToService(long userId, long SeviceId);
 
-    ActionResult getUserProcessHistory(Long userId);
+    List<SanProcess> getUserProcessHistory(Long userId);
 
     ActionResult getAllProcessHistory();
 

@@ -20,7 +20,24 @@ public enum GeneralStatus implements ExceptionCode {
   METHOD_NOT_ALLOWED("GEN_002", "error.general.method.not.allowed", HttpStatus.METHOD_NOT_ALLOWED),
   REQUEST_TIMEOUT("GEN_003", "error.general.request.timeout", HttpStatus.REQUEST_TIMEOUT),
   TOO_MANY_REQUESTS("GEN_004", "error.general.too.many.requests", HttpStatus.TOO_MANY_REQUESTS),
+// Add these to your existing UserStatus enum
 
+  // Date/Time related errors
+  INVALID_DATE_FORMAT("INVALID_DATE_FORMAT", "Invalid date/time format", HttpStatus.BAD_REQUEST),
+
+  // Conversion errors
+  CONVERSION_ERROR("CONVERSION_ERROR", "Data conversion failed", HttpStatus.BAD_REQUEST),
+  INVALID_PARAMETER_TYPE("INVALID_PARAMETER_TYPE", "Invalid parameter type", HttpStatus.BAD_REQUEST),
+
+  // Request parameter errors
+  MISSING_REQUIRED_PARAMETER("MISSING_REQUIRED_PARAMETER", "Required parameter is missing", HttpStatus.BAD_REQUEST),
+
+  // Serialization errors
+  SERIALIZATION_ERROR("SERIALIZATION_ERROR", "JSON serialization error", HttpStatus.INTERNAL_SERVER_ERROR),
+  MESSAGE_CONVERSION_ERROR("MESSAGE_CONVERSION_ERROR", "HTTP message conversion error", HttpStatus.BAD_REQUEST),
+
+  // General validation errors
+  INVALID_ARGUMENT("INVALID_ARGUMENT", "Invalid argument provided", HttpStatus.BAD_REQUEST),
   DUPLICATE_RECORD("GEN_005", "error.general.duplicate.record", HttpStatus.CONFLICT);
 
   private final String code;

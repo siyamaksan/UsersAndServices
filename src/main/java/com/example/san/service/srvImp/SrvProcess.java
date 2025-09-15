@@ -15,8 +15,10 @@ import com.example.san.service.ISrvProcess;
 import com.example.san.service.MainService;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -101,7 +103,7 @@ public class SrvProcess implements ISrvProcess {
     Srv srv = sanServiceOptional.get();
 
     // Check if user is already subscribed to this service
-    Optional<UserService> existingUserServiceOptional = userServiceRepository.findByUser_idAndSanService_id(
+    Optional<UserService> existingUserServiceOptional = userServiceRepository.findByUser_idAndSrv_id(
         serviceId, userId);
     if (existingUserServiceOptional.isEmpty()) {
       throw new UserException(UserStatus.USER_NOT_FOUND);
@@ -114,15 +116,16 @@ public class SrvProcess implements ISrvProcess {
 
   }
 
+  @CachePut(value = "processes", key = "#userId")
   @Override
   @Transactional
-  public ActionResult invokeService(long userId, long serviceId) {
+  public Boolean invokeService(long userId, long serviceId) {
 
-    Optional<UserService> userServiceOptional = userServiceRepository.findByUser_idAndSanService_id(
+    Optional<UserService> userServiceOptional = userServiceRepository.findByUser_idAndSrv_id(
         serviceId, userId);
 
     if (userServiceOptional.isEmpty()) {
-      return new ActionResult("User service subscription not found");
+     throw new UserException(UserStatus.USER_NOT_FOUND);
     }
 
     UserService userService = userServiceOptional.get();
@@ -146,27 +149,30 @@ public class SrvProcess implements ISrvProcess {
     recordProcessHistory(user, srv);
 
     // Execute service asynchronously
-    mainService.executeService(userService);
+     mainService.executeService(userService);
 
-    return ActionResult.SIMPLE_DONE;
+    return true;
 
 
   }
 
-  private void recordProcessHistory(User user, Srv srv) {
+
+  private SanProcess recordProcessHistory(User user, Srv srv) {
     SanProcess process = SanProcess.builder().user(user).srv(srv)
         .invokeDateAndTime(LocalDateTime.from(Instant.now())).build();
 
-    processRepository.save(process);
+    return processRepository.save(process);
   }
 
+  @CachePut(value = "processes", key = "#userId")
   @Override
   @Transactional(readOnly = true)
-  public ActionResult getUserProcessHistory(Long userId) {
+  public List<SanProcess> getUserProcessHistory(Long userId) {
 
-    return new ActionResult(processRepository.findByUser_id(userId));
+    return processRepository.findByUser_id(userId);
 
   }
+
 
   @Override
   @Transactional(readOnly = true)

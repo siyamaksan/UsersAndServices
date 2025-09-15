@@ -11,6 +11,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ public class SrvService implements ISrvService {
   @Autowired
   private SrvRepository iSrvRepository;
 
+  @CachePut(value = "services", key = "#result.id")
   @Override
   public Srv save(String name, long cost, long capa, LocalDateTime startTime) {
     LocalDateTime endTime = this.setServiceDuring(startTime);
@@ -91,6 +93,7 @@ public class SrvService implements ISrvService {
     return iSrvRepository.findByName(name);
   }
 
+  @CachePut(value = "services", key = "#serviceId")
   @Override
   public Srv activateService(long serviceId) {
 
@@ -105,7 +108,7 @@ public class SrvService implements ISrvService {
 
   }
 
-  @CachePut(value = "products", key = "#serviceId")
+  @CachePut(value = "services", key = "#serviceId")
   @Override
   public Srv deactivateService(long serviceId) {
     Optional<Srv> srvOptional = iSrvRepository.findById(serviceId);
@@ -119,6 +122,7 @@ public class SrvService implements ISrvService {
 
   }
 
+  @Cacheable(value = "services", key = "#id")
   @Override
   public Srv getById(Long id) {
     Optional<Srv> srvOptional = iSrvRepository.findById(id);

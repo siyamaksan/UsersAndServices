@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface UserServiceRepository extends JpaRepository<UserService,Long> {
 
 
-     Optional<UserService> findByUser_idAndSanService_id( long userId,long serviceId) ;
+     Optional<UserService> findByUser_idAndSrv_id( long userId,long serviceId) ;
 
 
 }

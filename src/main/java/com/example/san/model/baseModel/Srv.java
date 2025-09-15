@@ -37,11 +37,11 @@ public class Srv extends BaseEntity {
     private LocalDateTime EndTime;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "sanService", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "srv", cascade = CascadeType.REMOVE)
     private List<UserService> userServices=new ArrayList<>();;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "sanService", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "srv", cascade = CascadeType.REMOVE)
     private List<SanProcess> processes=new ArrayList<>();;
 
 

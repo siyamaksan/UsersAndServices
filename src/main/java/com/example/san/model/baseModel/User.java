@@ -31,7 +31,7 @@ public class User extends BaseEntity {
     private String password;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "users", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "users", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @BatchSize(size = 10) // Batch loading برای authorities
     @Fetch(FetchMode.SUBSELECT) // استفاده از subselect برای بهبود عملکرد
     private Set<Authority> authorities = new HashSet<>();

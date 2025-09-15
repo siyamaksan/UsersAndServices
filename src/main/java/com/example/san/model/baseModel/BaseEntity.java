@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MappedSuperclass;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +17,7 @@ import org.hibernate.annotations.BatchSize;
 @NoArgsConstructor
 @AllArgsConstructor
 @MappedSuperclass
-public class BaseEntity {
+public class BaseEntity implements Serializable {
 
     @ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @JoinColumn(name = "createdBy")

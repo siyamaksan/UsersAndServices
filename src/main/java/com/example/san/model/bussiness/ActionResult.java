@@ -7,6 +7,7 @@ import com.example.san.model.baseModel.Srv;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.beans.Transient;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -17,7 +18,7 @@ import lombok.Data;
 
 // Improved ActionResult class
 @Data
-public class ActionResult extends Srv {
+public class ActionResult implements Serializable {
 
   private final boolean successful;
 

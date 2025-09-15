@@ -77,7 +77,7 @@ public class SecurityConfig {
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/lib/**").permitAll()
                 .requestMatchers("/error", "/actuator/health").permitAll()
-                
+
                 // Admin endpoints
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 
@@ -87,6 +87,7 @@ public class SecurityConfig {
                 // All other requests require authentication
                 .anyRequest().authenticated()
             )
+
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
