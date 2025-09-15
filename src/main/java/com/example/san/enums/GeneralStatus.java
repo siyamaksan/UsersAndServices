@@ -1,6 +1,6 @@
 package com.example.san.enums;
 
-import com.example.san.Controller.Exception.ExceptionCode;
+import com.example.san.exception.ExceptionCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

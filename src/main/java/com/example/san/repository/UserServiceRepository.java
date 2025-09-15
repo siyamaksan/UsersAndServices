@@ -1,6 +1,6 @@
 package com.example.san.repository;
 
-import com.example.san.Model.BaseModel.UserService;
+import com.example.san.model.baseModel.UserService;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

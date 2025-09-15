@@ -15,19 +15,19 @@ public class ServiceAndUserAspect {
 //    private static final Logger logger = LoggerFactory.getLogger("tl");
 
 
-  @Before("execution(* com.example.san.Service.*.*(..))")         //point-cut expression
+  @Before("execution(* com.example.san.service.*.*(..))")         //point-cut expression
   public void logBefore(JoinPoint joinPoint) {
     log.info("method {} is started", joinPoint.getSignature().getName());
 
   }
 
-  @After("execution(* com.example.san.Service.*.*(..))")         //point-cut expression
+  @After("execution(* com.example.san.service.*.*(..))")         //point-cut expression
   public void logAfter(JoinPoint joinPoint) {
     log.info("method {} is ended", joinPoint.getSignature().getName());
 
   }
 
-  @After("execution(* com.example.san.Service.ISrvProcess.invokeService(..))")
+  @After("execution(* com.example.san.service.ISrvProcess.invokeService(..))")
   //point-cut expression
   public void afterInvoke(JoinPoint joinPoint) {
     log.info("method invoke {} is started", joinPoint.getSignature().getName());

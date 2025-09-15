@@ -1,6 +1,6 @@
 package com.example.san.repository;
 
-import com.example.san.Model.BaseModel.User;
+import com.example.san.model.baseModel.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
